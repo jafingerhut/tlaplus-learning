@@ -318,7 +318,152 @@ nice improvement.
 
 
 # Lecture 5: TCommit.tla
+
+The section of the video "THE TLA+ SPEC" begins at time 5:15 of the
+video, which is directly reachable at [this
+link](https://youtu.be/JwO4yPSEp-0&t=315).
+
+Start by creating a new spec named "TCommit", using the same steps as
+in the section for Lecture 3, except with a different module name.
+
+Then copy the contents of the file `TCommit.tla` in this directory
+into the Toolbox window, and save it.
+
+The section of the video "CHECKING THE SPEC" begins at time 18:13 of
+the video, which is directly reachable at [this
+link](https://youtu.be/JwO4yPSEp-0&t=1093).
+
+Create a new model with the default name "Model_1" using the same
+steps as in the section for Lecture 3.  Click the green arrow to run
+the model.
+
+There is an error.  Look for the red text "3 errors detected" next to
+the heading "Model Overview" at the top of the Model Overview page.
+In my version of TLC, clicking on "3 errors detected" did nothing.
+Instead, some tooltip text appeared when I hovered my mouse cursor
+over those words.  That tooltip text said:
+
+```
+Provide a value for constant RM
+Next: The Next formula must be provided
+Init: The Init formula must be provided
+```
+
+Before you can run the model, you must fill in the names of the
+definitions of the Init: and Next: formulas.  They are not filled in
+for you automatically by the Toolbox because the spec `TCommit.tla`
+does not use the default names `Init` and `Next`.
+
+Type `TCInit` into the Init: box, and `TCNext` into the Next: box.
+Then click the green button to run the model.
+
+To resolve the "Provide a value for constant RM" error:
+
+* In the section titled "What is the model?" is a box containing the
+  text "RM <-" with an unclickable "Edit" button to its right.  Click
+  on the line containing the text "RM <-", and it should become
+  selected, and the Edit button should now respond to clicks.
+* Click the Edit button
+* In the new window that appears, enter the text:
+
+```
+{"r1", "r2", "r3"}
+```
+
+* If any of the choices in the bottom left of the window other than
+  "Ordinary assignment" is selected, click the circle to the left of
+  "Ordinary assignment" to select it.
+* Click the Finish button.
+
+Add the invariant `TCTypeOK` in the Invariants section. using the same
+steps as in the section for Lecture 4.
+
+Disable deadlock being considered an error, using the same steps as in
+the sectino for Lecture 3.
+
+Click the green arrow button to run the model.  TLC should find no
+errors.
+
+Using the command line tools, create a file `TCommit.cfg` with the
+following contents:
+
+```
+CONSTANT
+RM <- RM_value
+INIT
+TCInit
+NEXT
+TCNext
+INVARIANT
+TCTypeOK
+CHECK_DEADLOCK
+FALSE
+```
+
+Note that running TLC will give an error if you use a line like this
+in the `.cfg` file:
+
+```
+RM <- {"r1", "r2", "r3"}
+```
+
+Instead, we can add a line like this to `TCommit.tla`:
+
+```
+RM_value == {"r1", "r2", "r3"}
+```
+
+and use `RM_value` in the `.cfg` file as shown above.  Then run the
+command:
+
+```bash
+$ tlc SimpleProgram.tla
+```
+
+TODO: I see in the video the number of distinct states found: 34, and
+I see this corresponding output from the `tlc` command line tool:
+
+```
+94 states generated, 34 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 6 and the 95th percentile is 4).
+```
+
+However, in the video Lamport points out that part of the Toolbox
+output is the number of times each sub-action was used.  How can one
+get that output from the command line tool?  I tried a few of the
+options visible from `tlc -h`, but did not find one yet that provides
+that output.
+
+
+## Checking that `TCConsistent` is an invariant
+
+Add the invariant `TCConsistent` in the Invariants section. using the
+same steps as in the section for Lecture 4.
+
+For the command line, the full contents of `TCommit.cfg` should now
+be:
+
+```
+CONSTANT
+RM <- RM_value
+INIT
+TCInit
+NEXT
+TCNext
+INVARIANT
+TCTypeOK
+CHECK_DEADLOCK
+FALSE
+```
+
+
+
+
 # Lecture 6: TwoPhase.tla
+
+
+
 # Lecture 7: PaxosCommit.tla
 # Lecture 9, Part 1: Remove.tla
 # Lecture 9, Part 1: ABSpec.tla
