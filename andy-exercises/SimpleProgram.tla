@@ -1,4 +1,4 @@
----------------------------- MODULE SimpleProgram ---------------------------
+--------------------------- MODULE SimpleProgram ---------------------------
 (*
 SimpleProgram.tla from Leslie Lamport's TLA+ Course, Lecture 3
 
@@ -22,3 +22,6 @@ Add1 == /\ pc = "middle"
 Next == Pick \/ Add1
 
 =============================================================================
+\* Modification History
+\* Last modified Wed Sep 01 18:58:20 PDT 2021 by andy
+\* Created Wed Sep 01 18:53:04 PDT 2021 by andy
