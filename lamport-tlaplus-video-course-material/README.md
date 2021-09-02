@@ -417,7 +417,7 @@ and use `RM_value` in the `.cfg` file as shown above.  Then run the
 command:
 
 ```bash
-$ tlc SimpleProgram.tla
+$ tlc TCommit.tla
 ```
 
 TODO: I see in the video the number of distinct states found: 34, and
@@ -455,12 +455,144 @@ INVARIANT
 TCTypeOK
 CHECK_DEADLOCK
 FALSE
+INVARIANT
+TCConsistent
 ```
 
 
-
-
 # Lecture 6: TwoPhase.tla
+
+The section of the video "THE TLA+ SPEC" begins at time 4:30 of the
+video, which is directly reachable at [this
+link](https://youtu.be/U4mlGqXjtoA&t=270).
+
+Start by creating a new spec named "TwoPhase", using the same steps as
+in the section for Lecture 3, except with a different module name.
+
+Then copy the contents of the file `TwoPhase.tla` in this directory
+into the Toolbox window, and save it.
+
+The section of the video "CHECKING THE SPEC" begins at time 15:41 of
+the video, which is directly reachable at [this
+link](https://youtu.be/U4mlGqXjtoA&t=941).
+
+Create a new model with the default name "Model_1" using the same
+steps as in the section for Lecture 3.
+
+Before you can run the model, you must fill in the names of the
+definitions of the Init: formula with `TPInit` and the Next: formula
+with `TPNext`.  You must also provide a value for the constant `RM`.
+As in the previous section, assign it a value of:
+
+```
+{"r1", "r2", "r3"}
+```
+
+Add the invariant `TPTypeOK` in the Invariants section. using the same
+steps as in the section for Lecture 4.
+
+Click the green arrow button to run the model.  TLC should find no
+errors.
+
+Using the command line tools, create a file `TwoPhase.cfg` with the
+following contents:
+
+```
+CONSTANT
+RM <- RM_value
+INIT
+TPInit
+NEXT
+TPNext
+INVARIANT
+TPTypeOK
+```
+
+Note that there is no need to add a line defining `RM_value` to
+`TwoPhase.tla` if you already did so in `TCommit.tla` as recommended
+in the previous section, because `TwoPhase.tla` has a line `INSTANCE
+TCommit` that 'imports' this definition of `RM_value`.
+
+Then run the command:
+
+```bash
+$ tlc TwoPhase.tla
+```
+
+TODO: Why isn't deadlock detected for this spec?  I suppose there must
+be an enabled transition out of every state into another state?
+
+The number of distinct states reported by both the Toolbox and command
+line versions was 288 when I ran TLC on `TwoPhase.tla`.
+
+
+## Making the value of `RM` a symmetry set
+
+In the Toolbox:
+
+* In the model's "Model Overview" tab, in the section titled "What is
+  the model?", click to select the line `RM <- {"r1", "r2", "r3"}` and
+  click the Edit button.
+* In the text box, change `{"r1", "r2", "r3"}` to `{r1, r2, r3}`.
+* Below the text box, click the circle next to "Set of model values".
+* Then click the check box next to "Symmetry set" so that the check
+  box is enabled.
+* Click the Finish button.
+
+Version difference: In the video, you must click a Next button to get
+to another window before clicking Finish, but in Version 1.7.1 there
+is no Next button to click.
+
+Click the green arrow button to run the model.
+
+There should be no error.  Because of making `RM` a symmetry set, the
+number of Distinct States reported should be 80, much smaller than the
+288 found above.
+
+Using the command line tools, I am not sure if the following is the
+best or only way to make `RM` a symmetry set, but it is one way.
+Create a file `TwoPhase.cfg` with the following contents:
+
+```
+CONSTANT
+r1 = r1
+r2 = r2
+r3 = r3
+RM <- RM_value2
+SYMMETRY RM_value2_permutations
+INIT
+TPInit
+NEXT
+TPNext
+INVARIANT
+TPTypeOK
+```
+
+You must also add the following lines to `TwoPhase.tla`:
+
+```
+EXTENDS TLC
+
+CONSTANTS r1, r2, r3
+
+RM_value2 == {r1, r2, r3}
+
+RM_value2_permutations == Permutations(RM_value2)
+```
+
+The `EXTENDS TLC` line must be first in the spec, and is needed
+because it defines the function `Permutations`.  The other lines can
+be just about anywhere in the `TwoPhase.tla` file.
+
+Then run the command:
+
+```
+$ tlc TwoPhase.tla
+```
+
+As above there should be no error.  Because the value of `RM` is a
+symmetry set, the number of distinct states reported is 80 in the
+output of `tlc`.
 
 
 
