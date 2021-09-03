@@ -717,7 +717,130 @@ states.
 
 
 # Lecture 9, Part 1: Remove.tla
+
+
 # Lecture 9, Part 1: ABSpec.tla
+
+The section of this video discussing what to do in the Toolbox begins
+at time 10:17 of the video, which is directly reachable at [this
+link](https://youtu.be/G2QkMpiVFDo&t=617).
+
+Follow the steps in the section for Lecture 7 above to copy the file
+`ABSpec.tla` from this directory into the directory where you are
+doing your exercises, and add it to the Toolbox.
+
+Create a new model with the default name "Model_1" using the same
+steps as in the section for Lecture 3.
+
+Define a value for the constant `Data` of `{"d1","d2","d3"}` using
+similar steps as in the section for Lecture 5.
+
+Add `TypeOK` and `Inv` as invariants to check using similar steps as
+in the section for Lecture 4.
+
+Click the green run button.  There should be no errors this time.
+
+To run the model from the command line, create a file
+`ABSpec.cfg` using a text editor, containing these lines:
+
+```
+CONSTANT
+Data <- Data_value
+SPECIFICATION
+Spec
+INVARIANT
+TypeOK
+Inv
+```
+
+You must also add the following lines to `ABSpec.tla`:
+
+```
+Data_value == {"d1", "d2", "d3"}
+```
+
+Then run the command:
+
+```
+$ tlc ABSpec.tla
+```
+
+
+## Cloning a model
+
+The section of this video discussing what to do in the Toolbox for
+adding liveness conditions to `ABSpec` starts at time 18:32 of the
+video, which is directly reachable at [this
+link](https://youtu.be/G2QkMpiVFDo&t=1112).
+
+In the Toolbox, while `ABSpec` and its `Model_1` are open:
+
+* Clone the model by selecting menu item TLC Model Checker -> Clone
+  Model -> Model_1
+* In the window that appears, the default name of `Model_2` is fine.
+  Click the OK button.
+
+A note from the lecture: For liveness checking, your model must not
+have any symmetry set.  If it does, change it.  If you have followed
+the instructions above and not created a symmetry set, there is
+nothing to change.
+
+Change its behavior spec to `FairSpec`:
+
+* Select the "Model Overview" tab.
+* In the section "What is the behavior spec?", the popup menu should
+  say "Temporal formula".  If it does not, change the popup menu
+  setting to "Temporal Formula".
+* In the text box below "Temporal Formula", change the text so it says
+  `FairSpec`.
+
+Check a particular liveness property:
+
+* In the section "What to check?", open the sub-section named
+  "Properties".
+* Click the Add button on the right in the "Properties" section.
+* In the window that appears, enter the following liveness formula:
+
+```
+\A v \in Data \X {0,1}: (AVar = v) ~> (BVar = v)
+```
+
+* Click the Finish button.
+
+Click the green arrow button to run the model.  No errors should be found.
+
+To run the model from the command line, create a file
+`ABSpec-liveness.cfg` using a text editor, containing these lines:
+
+```
+CONSTANT
+Data <- Data_value
+SPECIFICATION
+FairSpec
+INVARIANT
+TypeOK
+Inv
+PROPERTY
+Liveness_property_1
+```
+
+You must also add the following lines to `ABSpec.tla`:
+
+```
+Liveness_property_1 == \A v \in Data \X {0,1}: (AVar = v) ~> (BVar = v)
+```
+
+Then run the following command.  Note that if you do not use the
+`-config` command line option to `tlc`, as we have always run it
+before, then `tlc` will read the configuration for a spec `foo.tla`
+from `foo.cfg`.  If you give the `-config bar.cfg` option, you can
+force `tlc` to read the configuration from any file you wish.
+
+```bash
+$ tlc -config ABSpec-liveness.cfg ABSpec.tla
+```
+
+
 # Lecture 9, Part 2: AB.tla
 # Lecture 10, Part 1: AB2.tla
 # Lecture 10, Part 2: AB2P.tla
