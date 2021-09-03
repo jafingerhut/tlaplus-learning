@@ -845,3 +845,73 @@ $ tlc -config ABSpec-liveness.cfg ABSpec.tla
 # Lecture 10, Part 1: AB2.tla
 # Lecture 10, Part 2: AB2P.tla
 # Lecture 10, Part 2: AB2H.tla
+
+
+# Andy's experiments on variants of the Alternating Bit protocol
+
+
+## Make receiver only send acknowledgements when it receives a data message
+
+That is, B will only send an ACK message as a consequence of receiving
+a data message from A.  It will not periodically send ACK messages.
+
+As long as A periodically sends data messages, I believe that should
+be enough to maintain liveness properties.  Verify that this is so.
+
+
+## Make sender only send data messages when it receives an acknowledgement
+
+That is, A will only send a data message as a consequence of receiving
+an acknowledgement from B.  It will not periodically send data
+messages.
+
+As long as B periodically sends acknowledgements, I believe that
+should be enough to maintain liveness properties.  Verify that this is
+so.
+
+
+## Make both sender and receiver only send messages after receiving a message
+
+It seems pretty clear to me that this should lead to deadlock.  Verify
+that TLC can detect this, too.
+
+
+## Make the link in one or both directions able to reorder messages
+
+I believe the protocol will behave incorrectly in the face of
+reordered messages, in either direction.
+
+Verify that TLC can find an incorrect behavior if the link from A to B
+can reorder messages, but the link from B to A is still FIFO (and
+lossy).
+
+Verify that TLC can find an incorrect behavior if the link from B to A
+can reorder messages, but the link from A to B is still FIFO (and
+lossy).
+
+Finally, verify TLC can find an incorrect behavior if the links in
+both directions can reorder messages.
+
+
+## Make the link in both directions able to reorder messages, but use finite sequence number
+
+I am not sure how best to model this in TLA+, but here is one thought:
+
+Use a 3-bit sequence number, for example, i.e. sequence numbers in
+messages must be in the range [0.7].
+
+Whenever A increases its message sequence number from X-1 to X for
+sending data messages, as a side effect of doing that, all messages on
+the link from A to B with sequence number X are removed.  I believe
+this should simulate in the model the assumption: by the time that A
+reuses sequence number X after it last used it, all earlier messages
+with sequence number X will have exceeded the maximum latency that the
+network from A to B should ever have for any data message.
+
+If that behavior is not difficult to specify, then a minor variation
+is to make the side effect of A increasing its sequence number from
+X-1 to X to instead discard all messages it sent earlier with a
+sequence number in the range [X-D, X] (using arithmetic modulo 8, or
+whatever the number of sequence numbers is), where D >= 0 is a
+parameter that can be used to tune the maximum lifetime of messages in
+the network.
