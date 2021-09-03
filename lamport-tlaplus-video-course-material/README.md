@@ -597,6 +597,125 @@ output of `tlc`.
 
 
 # Lecture 7: PaxosCommit.tla
+
+The section of the video "CHECKING THE SPEC" begins at time 14:02 of
+the video, which is directly reachable at [this
+link](https://youtu.be/u7fTLyiSnZw&t=842)
+
+For the Toolbox, this time we will do something slightly different
+than before to add the spec, because the file `PaxosCommit.tla`
+already is a complete file, including the `--- MODULE PaxosCommit
+----` line at the beginning and the line of equals signs at the end.
+
+First copy the file `PaxosCommit.tla` from this directory into the
+directory where you are doing your exercises (in my case it was the
+directory `andy-exercises`, also in the repository).  Use your
+operating system's capabilities to copy the file.
+
+* Select menu item File -> Open Spec -> Add New Spec...
+* In the window that appears, click Browse button
+* In the window that appears, navigate to the folder to which you just
+  copied the file `PaxosCommit.tla`.
+* In the list of files within the folder that is now displayed, you
+  should see `PaxosCommit.tla`.  Click on it to select it.  This
+  should cause the text box in the top middle of the window that
+  formerly contained "Untitled.tla" to now contain "PaxosCommit.tla".
+* Click the Save button.
+* Back at the window where I clicked the Browse button, click the
+  Finish button.
+* Save the spec using File -> Save
+
+Create a new model with the default name "Model_1" using the same
+steps as in the section for Lecture 3.
+
+Before you can run the model, you must fill in the names of the
+definitions of the Init: formula with `PCInit` and the Next: formula
+with `PCNext`.
+
+You must also provide a value for the four constants with names
+`Ballot`, `Acceptor`, `Majority`, and `RM`.  Here are the values
+recommended in the lecture.  You can assign these values in the
+Toolbox following the same instructions described in the notes for
+Lecture 5 above for the `RM` constant.
+
+```
+Ballot <- {0, 1}
+Acceptor <- {a1, a2, a3}
+Majority <- {{a1, a2}, {a1, a3}, {a2, a3}}
+RM <- {r1, r2}
+```
+
+Make `Acceptor` and `RM` symmetry sets, as we did for `RM` as
+described in the notes for Lecture 6 above.  `Ballot` and `Majority`
+should be marked as "Ordinary assignment".
+
+Add conditions `PCTypeOK` and `TCConsistent` as invariants to check.
+This can be done using the same instructions as described in Lecture 4
+above.
+
+Click the green arrow button to run the model.  This took about 55
+seconds on my 2015 MacBook Pro laptop.  It found no errors, and
+119,992 distinct states.
+
+Using the command line tools, I am not sure if the following is the
+best or only way to make `RM` a symmetry set, but it is one way.
+Create a file `TwoPhase.cfg` with the following contents:
+
+```
+CONSTANT
+a1 = a1
+a2 = a2
+a3 = a3
+r1 = r1
+r2 = r2
+Ballot <- Ballot_value
+Acceptor <- Acceptor_value
+Majority <- Majority_value
+RM <- RM_value2
+SYMMETRY symmetry_value_permutations
+INIT
+PCInit
+NEXT
+PCNext
+INVARIANT
+PCTypeOK
+TCConsistent
+```
+
+TODO: I do not know why, but it is important that the lines giving
+values for `Ballot`, `Acceptor`, `Majority`, and `RM` in the `.cfg`
+file above must use `<-`, not `=` as done for the earlier constants.
+
+You must also add the following lines to `TwoPhase.tla`:
+
+```
+EXTENDS Integers, TLC
+
+CONSTANTS a1, a2, a3
+CONSTANTS r1, r2
+
+Ballot_value == {0, 1}
+Acceptor_value == {a1, a2, a3}
+Majority_value == {{a1, a2}, {a1, a3}, {a2, a3}}
+RM_value2 == {r1, r2}
+
+symmetry_value_permutations == Permutations(Acceptor_value) \union Permutations(RM_value2)
+```
+
+The line `EXTENDS Integers, TLC` should replace the existing line
+`EXTENDS Integers`.  The other lines can follow the `EXTENDS` line if
+you wish, or they can appear just about anywhere in the `.tla` file.
+
+Then run the command:
+
+```
+$ tlc PaxosCommit.tla
+```
+
+As above there should be no error.  Again it found 119,992 distinct
+states.
+
+
 # Lecture 9, Part 1: Remove.tla
 # Lecture 9, Part 1: ABSpec.tla
 # Lecture 9, Part 2: AB.tla
