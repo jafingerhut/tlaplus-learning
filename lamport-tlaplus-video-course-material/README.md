@@ -21,8 +21,8 @@ equivalent in behavior to the longer ones.
 
 Long form of commands:
 ```bash
-$ java -cp $HOME/install/lib/tla2tools.jar tla2sany.SANY SimpleProgram.tla 
-$ java -cp $HOME/install/lib/tla2tools.jar tla2tex.TLA SimpleProgram.tla 
+$ java -cp $HOME/install/lib/tla2tools.jar tla2sany.SANY SimpleProgram.tla
+$ java -cp $HOME/install/lib/tla2tools.jar tla2tex.TLA SimpleProgram.tla
 $ java -XX:+IgnoreUnrecognizedVMOptions -XX:+UseParallelGC -cp $HOME/install/lib/tla2tools.jar tlc2.TLC SimpleProgram.tla
 ```
 
@@ -842,6 +842,187 @@ $ tlc -config ABSpec-liveness.cfg ABSpec.tla
 
 
 # Lecture 9, Part 2: AB.tla
+
+The section of the video "THE TLA+ SPEC" begins at time 2:35 of the
+video, which is directly reachable at [this
+link](https://youtu.be/ata84UpVJkU&t=155).
+
+Follow the steps in the section for Lecture 7 above to copy the file
+`AB.tla` from this directory into the directory where you are doing
+your exercises, and add it to the Toolbox.
+
+The section of the video "CHECKING SAFETY" begins at time 6:34 of the
+video, which is directly reachable at [this
+link](https://youtu.be/ata84UpVJkU&t=394).
+
+Create a new model with the default name "Model_1" using the same
+steps as in the section for Lecture 3.
+
+In the section "What is the behavior spec?", the popup menu should
+have "Temporal Formula" selected, and the box beneath that should
+contain `Spec`.  If anything differs from that, change it to be that
+way.
+
+* In the model's "Model Overview" tab, in the section titled "What is
+  the model?", click to select the line `Data <-` and click the Edit
+  button.
+* In the text box, enter `{d1,d2,d3}`
+* Below the text box, click the circle next to "Set of model values".
+* Click the Finish button.
+
+Add `TypeOK` as an invariant to check using similar steps as in the
+section for Lecture 4.
+
+
+## Adding state constraints to the model
+
+* In the model's "Model Overview" tab, just above the section "What is
+  the model?", there is an underlined "Additional Spec Options" link.
+  Click on it. A new tab "Spec Options" should appear and be selected.
+* In the section "State Constraint", enter the following formula in
+  the text box:
+
+```
+/\ Len(AtoB) =< 3
+/\ Len(BtoA) =< 3
+```
+
+
+## Checking that AB implements ABSpec
+
+In the "Model Overview" tab, add this formula in the Properties
+sub-section of section "What to check?":
+
+```
+ABS!Spec
+```
+
+Click the green arrow to run the model.  There should be no errors.
+
+Using the command line tools, we could create a file `AB.cfg` similar
+to how we have done in earlier lectures, but it would again require
+adding several lines to `AB.tla` that define things that do not really
+belong in the specification `AB.tla`.
+
+Instead, this time we are going to do it more like how the TLA+
+Toolbox does, which is to create a new specification
+`ABplusconstraints` that extends `AB`.  Create a file
+`ABplusconstraints.tla` with the following contents:
+
+```
+-------------------------- MODULE ABplusconstraints -------------------------
+EXTENDS AB
+
+CONSTANTS d1, d2, d3
+
+Data_value == {d1, d2, d3}
+
+Constraint_atmost3messages ==
+    /\ Len(AtoB) =< 3
+    /\ Len(BtoA) =< 3
+
+ABS_Spec == ABS!Spec
+
+=============================================================================
+```
+
+Now create a file `ABplusconstraints.cfg` with the following contents:
+
+```
+CONSTANT
+d1 = d1
+d2 = d2
+d3 = d3
+Data <- Data_value
+SPECIFICATION
+Spec
+CONSTRAINT
+Constraint_atmost3messages
+INVARIANT
+TypeOK
+PROPERTY
+ABS_Spec
+```
+
+To run TLC on this new extended spec:
+
+```bash
+$ tlc ABplusconstraints.tla
+```
+
+
+## Checking liveness of AB
+
+The section of the video "LIVENESS" begins at time 10:52 of the video,
+which is directly reachable at [this
+link](https://youtu.be/ata84UpVJkU&t=652).
+
+Edit the definition of `FairSpec` in `AB.tla` to look like this,
+i.e. replace boh occurrences of `SF` with `WF`:
+
+```
+FairSpec == Spec  /\  WF_vars(ARcv) /\ WF_vars(BRcv) /\
+                      WF_vars(ASnd) /\ WF_vars(BSnd)
+```
+
+Clone `Model_1` of `AB` to a new model `Model_2`, using the same steps
+for cloning described earlier in the section on Lecture 9, Part 1.
+
+In the "What is the behavior spec?", change `Spec` to `FairSpec`.
+
+In the Properties sub-section of section "What to check?", edit
+`ABS!Spec` to replace it with `ABS!FairSpec`.
+
+Click the green arrow button to run the model.  It reports a violation
+of the temporal part of the specification.  The video discusses the
+counterexample given by TLC, and the difference between weak and
+strong fairness.
+
+Using the command line tools, create a new module `ABwithfairness` by
+creating the file `ABwithfairness.tla` with the contents below:
+
+```
+--------------------------- MODULE ABwithfairness ---------------------------
+EXTENDS AB
+
+CONSTANTS d1, d2, d3
+
+Data_value == {d1, d2, d3}
+
+Constraint_atmost3messages ==
+    /\ Len(AtoB) =< 3
+    /\ Len(BtoA) =< 3
+
+ABS_Spec == ABS!FairSpec
+
+=============================================================================
+```
+
+Now create a file `ABwithfairness.cfg` with the following contents:
+
+```
+CONSTANT
+d1 = d1
+d2 = d2
+d3 = d3
+Data <- Data_value
+SPECIFICATION
+FairSpec
+CONSTRAINT
+Constraint_atmost3messages
+INVARIANT
+TypeOK
+PROPERTY
+ABS_Spec
+```
+
+To run TLC on this new extended spec:
+
+```bash
+$ tlc ABwithfairness.tla
+```
+
+
 # Lecture 10, Part 1: AB2.tla
 # Lecture 10, Part 2: AB2P.tla
 # Lecture 10, Part 2: AB2H.tla
