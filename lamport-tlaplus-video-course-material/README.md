@@ -718,6 +718,63 @@ states.
 
 # Lecture 9, Part 1: Remove.tla
 
+The section of this video discussing what to do in the Toolbox begins
+at time 3:15 of the video, which is directly reachable at [this
+link](https://youtu.be/G2QkMpiVFDo&t=195).
+
+Start by creating a new spec named `Remove`, using the same steps as
+in the section for Lecture 3, except with a different module name.
+
+Then copy the contents of the file `Remove.tla` in this directory into
+the Toolbox window, and save it.
+
+Create a new model with the default name "Model_1" using the same
+steps as in the section for Lecture 3.
+
+Apparently the Toolbox recognizes that there is nothing like a
+behavior specification in `Remove.tla`, because the tab "Model
+Overview" in the section "What is the behavior spec?" has the entry
+"No behavior spec" of the pop-up menu selected.
+
+The "Model Checking Results" tab has a section named "Evaluate
+Constant Expression" with a text box beneath it labeled "Expression:".
+Enter the following expression in that box:
+
+```
+Remove(3, <<1, 2, 3, 4>>)
+```
+
+Click the green arrow button to run the model.  When finished the text
+box labeled "Value:" should display the result of evaluating the
+expression, which is `<<1, 2, 4>>`.
+
+To do this from the command line, create a file `Remove_eval.tla`
+using a text editor, containing these lines:
+
+```
+------------------------ MODULE Remove_eval ------------------------
+EXTENDS Remove, TLC
+
+expr_to_eval == Remove(3, <<1, 2, 3, 4>>)
+
+ASSUME PrintT(<<"eval result:", expr_to_eval>>)
+
+====================================================================
+```
+
+I think that you need an empty file `Remove_eval.cfg` as well.  Then
+run the command:
+
+```
+$ tlc Remove_eval.tla
+```
+
+In the output you can find this line:
+
+```
+<<"eval result:", <<1, 2, 4>>>>
+```
+
 
 # Lecture 9, Part 1: ABSpec.tla
 
