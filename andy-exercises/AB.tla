@@ -80,6 +80,7 @@ BRcv == /\ AtoB # << >>
 (* LoseMsg is the action that removes an arbitrary message from queue AtoB *)
 (* or BtoA.                                                                *)
 (***************************************************************************)
+(*
 LoseMsg == /\ \/ /\ \E i \in 1..Len(AtoB):
                          AtoB' = Remove(i, AtoB)
                  /\ BtoA' = BtoA
@@ -87,8 +88,23 @@ LoseMsg == /\ \/ /\ \E i \in 1..Len(AtoB):
                          BtoA' = Remove(i, BtoA)
                  /\ AtoB' = AtoB
            /\ UNCHANGED << AVar, BVar >>
+*)
 
-Next == ASnd \/ ARcv \/ BSnd \/ BRcv \/ LoseMsg
+(* I prefer to have separate definitions for the losing of each kind
+of message.  It makes counterexamples a bit easier to read with the
+separate names. *)
+
+LoseMsgAtoB == /\ /\ \E i \in 1..Len(AtoB):
+                          AtoB' = Remove(i, AtoB)
+                  /\ BtoA' = BtoA
+               /\ UNCHANGED << AVar, BVar, BtoA >>
+
+LoseMsgBtoA == /\ /\ \E i \in 1..Len(BtoA):
+                          BtoA' = Remove(i, BtoA)
+                  /\ AtoB' = AtoB
+               /\ UNCHANGED << AVar, BVar, AtoB >>
+
+Next == ASnd \/ ARcv \/ BSnd \/ BRcv \/ LoseMsgAtoB \/ LoseMsgBtoA
 
 Spec == Init /\ [][Next]_vars
 -----------------------------------------------------------------------------
