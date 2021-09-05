@@ -94,14 +94,12 @@ LoseMsg == /\ \/ /\ \E i \in 1..Len(AtoB):
 of message.  It makes counterexamples a bit easier to read with the
 separate names. *)
 
-LoseMsgAtoB == /\ /\ \E i \in 1..Len(AtoB):
-                          AtoB' = Remove(i, AtoB)
-                  /\ BtoA' = BtoA
+LoseMsgAtoB == /\ \E i \in 1..Len(AtoB):
+                       AtoB' = Remove(i, AtoB)
                /\ UNCHANGED << AVar, BVar, BtoA >>
 
-LoseMsgBtoA == /\ /\ \E i \in 1..Len(BtoA):
-                          BtoA' = Remove(i, BtoA)
-                  /\ AtoB' = AtoB
+LoseMsgBtoA == /\ \E i \in 1..Len(BtoA):
+                       BtoA' = Remove(i, BtoA)
                /\ UNCHANGED << AVar, BVar, AtoB >>
 
 Next == ASnd \/ ARcv \/ BSnd \/ BRcv \/ LoseMsgAtoB \/ LoseMsgBtoA
