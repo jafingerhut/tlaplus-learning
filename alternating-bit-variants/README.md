@@ -96,7 +96,7 @@ Step `ARcv` has only weak fairness, so the above sequence does not
 violate that, since `ARcv` is not continuously enabled.
 
 
-# AB_nonfifo does not even satisfy safety properties of ABSpec
+# AB_nonfifo does not satisfy safety properties of ABSpec
 
 `AB_nonfifo` is a modified version of `AB` where messages can be
 reordered after being sent by A, before being received by B, and
@@ -134,7 +134,7 @@ easily finds a counterexample to the safety properties of `ABSpec`, as
 it should.
 
 ```bash
-tlc -difftrace AB_nonfifo_ql3.tla -config AB_ql3_safety_only.cfg 
+tlc -difftrace AB_nonfifo_ql3.tla -config AB_ql3_safety_only.cfg
 ```
 
 Here is a counterexample it found when I tried running that command:
@@ -205,4 +205,98 @@ State     AVar       BVar    Steps in ABSpec that are allowed to be taken
 ```
 
 Steps 1 to 4 and 4 to 6 are allowed by `ABSpec`, but step 6 to 7 is
+not.
+
+
+# AB_nonfifoBtoA does not satisfy safety properties of ABSpec
+
+`AB_nonfifoBtoA` is a modified version of `AB_nonfifo` where messages
+must be in FIFO order from A to B, but acknowledgements from B to A
+can be reordered in the network.  I created it after `AB_nonfifo`,
+simply to verify that even if only acknowledgement messages can be
+reordered, `AB_nonfifoBtoA`, it still does not satisfy the desired
+safety properties of `ABSpec`.
+
+```bash
+tlc -difftrace AB_nonfifoBtoA_ql3.tla -config AB_ql3_safety_only.cfg
+```
+
+Here is a counterexample it found when I tried running that command:
+
+```
+State 1: <Initial predicate>
+/\ AtoB = <<>>
+/\ BVar = <<d1, 1>>
+/\ AVar = <<d1, 1>>
+/\ BtoA = {}
+
+State 2: <BSnd line 75, col 9 to line 76, col 41 of module AB_nonfifoBtoA>
+/\ BtoA = {1}
+
+State 3: <ARcv line 63, col 9 to line 69, col 35 of module AB_nonfifoBtoA>
+/\ AVar = <<d1, 0>>
+/\ BtoA = {}
+
+State 4: <ASnd line 53, col 9 to line 54, col 41 of module AB_nonfifoBtoA>
+/\ AtoB = <<<<d1, 0>>>>
+
+State 5: <BSnd line 75, col 9 to line 76, col 41 of module AB_nonfifoBtoA>
+/\ BtoA = {1}
+
+State 6: <BRcv line 82, col 9 to line 87, col 35 of module AB_nonfifoBtoA>
+/\ AtoB = <<>>
+/\ BVar = <<d1, 0>>
+
+State 7: <BSnd line 75, col 9 to line 76, col 41 of module AB_nonfifoBtoA>
+/\ BtoA = {0, 1}
+
+State 8: <ARcv line 63, col 9 to line 69, col 35 of module AB_nonfifoBtoA>
+/\ AVar = <<d1, 1>>
+/\ BtoA = {1}
+
+State 9: <ARcv line 63, col 9 to line 69, col 35 of module AB_nonfifoBtoA>
+/\ AtoB = <<>>
+/\ BVar = <<d1, 0>>
+/\ AVar = <<d1, 0>>
+/\ BtoA = {}
+
+1408 states generated, 301 distinct states found, 56 states left on queue.
+```
+
+Note that the acknowledgement message `0` sent by B in state 7 is
+received by A in state 8, before the message `1` that was sent earlier
+by B in state 5.
+
+If we ignore the values of `AtoB` and `BtoA`, and focus only on the
+values of `AVar` and `BVar` in the sequence of states, we have:
+
+```
+State     AVar       BVar
+-----  ---------  ---------
+  1    <<d1, 1>>  <<d1, 1>>
+  2    <<d1, 1>>  <<d1, 1>>
+  3    <<d1, 0>>  <<d1, 1>>
+  4    <<d1, 0>>  <<d1, 1>>
+  5    <<d1, 0>>  <<d1, 1>>
+  6    <<d1, 0>>  <<d1, 0>>
+  7    <<d1, 0>>  <<d1, 0>>
+  8    <<d1, 1>>  <<d1, 0>>
+  9    <<d1, 0>>  <<d1, 0>>
+```
+
+If we remove the steps that are stuttering steps for `ABSpec`, that
+leaves us with this sequence:
+
+```
+State     AVar       BVar    Steps in ABSpec that are allowed to be taken
+-----  ---------  ---------  ----------------------------------------------
+  1    <<d1, 1>>  <<d1, 1>>  only step A
+  3    <<d1, 0>>  <<d1, 1>>  only step B
+  6    <<d1, 0>>  <<d1, 0>>  only step A
+  8    <<d1, 1>>  <<d1, 0>>  only step B, which if taken would lead to BVar
+                             changing, but AVar remaining the same
+  9    <<d1, 0>>  <<d1, 0>>
+```
+
+All steps up to 6 to 8 are allowed by `ABSpec`, but step 8 to 9 is
 not.

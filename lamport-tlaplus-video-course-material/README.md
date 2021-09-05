@@ -1125,8 +1125,8 @@ reordered messages, in either direction.
 Verify TLC can find an incorrect behavior if the links in both
 directions can reorder messages.
 
-I have done this last one.  See
-[here](../alternating-bit-variants/README.md#ab_nonfifo-does-not-even-satisfy-safety-properties-of-abspec).
+DONE: See
+[here](../alternating-bit-variants/README.md#ab_nonfifo-does-not-satisfy-safety-properties-of-abspec).
 
 Note that the counterexample only reorders messages from A to B, so it
 demonstrates that even if I did write a varant of `AB_nonfifo` that
@@ -1137,6 +1137,8 @@ TODO: Verify that TLC can find an incorrect behavior if the link from
 B to A can reorder messages, but the link from A to B is still FIFO
 (and lossy).
 
+DONE: See
+[here](../alternating-bit-variants/README.md#ab_nonfifobtoa-does-not-satisfy-safety-properties-of-abspec).
 
 
 ## Make the link in both directions able to reorder messages, but use finite sequence number
