@@ -9,6 +9,4 @@ Constraint_atmost3messages ==
     /\ Len(AtoB) =< 3
     /\ Len(BtoA) =< 3
 
-ABS_Spec == ABS!FairSpec
-
 =============================================================================
