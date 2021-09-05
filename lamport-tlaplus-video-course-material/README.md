@@ -1096,6 +1096,9 @@ a data message from A.  It will not periodically send ACK messages.
 As long as A periodically sends data messages, I believe that should
 be enough to maintain liveness properties.  Verify that this is so.
 
+I have done this.  See
+[here](../alternating-bit-variants/README.md#checking-what-properties-that-ab_trigacks-satisfies).
+
 
 ## Make sender only send data messages when it receives an acknowledgement
 
