@@ -1122,16 +1122,21 @@ that TLC can detect this, too.
 I believe the protocol will behave incorrectly in the face of
 reordered messages, in either direction.
 
-Verify that TLC can find an incorrect behavior if the link from A to B
-can reorder messages, but the link from B to A is still FIFO (and
-lossy).
+Verify TLC can find an incorrect behavior if the links in both
+directions can reorder messages.
 
-Verify that TLC can find an incorrect behavior if the link from B to A
-can reorder messages, but the link from A to B is still FIFO (and
-lossy).
+I have done this last one.  See
+[here](../alternating-bit-variants/README.md#ab_nonfifo-does-not-even-satisfy-safety-properties-of-abspec).
 
-Finally, verify TLC can find an incorrect behavior if the links in
-both directions can reorder messages.
+Note that the counterexample only reorders messages from A to B, so it
+demonstrates that even if I did write a varant of `AB_nonfifo` that
+restricted B-to-A messages to FIFO, it could still find this same
+counterexample.
+
+TODO: Verify that TLC can find an incorrect behavior if the link from
+B to A can reorder messages, but the link from A to B is still FIFO
+(and lossy).
+
 
 
 ## Make the link in both directions able to reorder messages, but use finite sequence number
