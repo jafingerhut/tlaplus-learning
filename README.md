@@ -30,6 +30,10 @@ primarily variations of Paxos.  The TLA+ parts of this are probably
 more appropriate for someone who is already familiar with TLA+.
 
 
+## tlaplus Google group
+
+https://groups.google.com/g/tlaplus
+
 
 # Utilities
 
