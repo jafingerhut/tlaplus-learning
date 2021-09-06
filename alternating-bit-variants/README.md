@@ -403,3 +403,26 @@ found 37632 distinct states:
 ```bash
 tlc -difftrace ABQ_ql.tla -config AB_ql3_fss_satisfies_fs.cfg
 ```
+
+
+# ABQ_nonfifo does not satisfy safety properties of ABQSpec
+
+This is really retreading old ground that was done in the section
+above named [AB_nonfifo does not satisfy safety properties of
+ABSpec](#ab_nonfifo-does-not-satisfy-safety-properties-of-abspec).
+The only difference is that here we are using ABQSpec instead of
+ABSpec, and ABQ_nonfifo instead of AB_nonfifo.  See that section for
+motivation.
+
+When messages can be reordered between A and B in the network, TLC
+easily finds a counterexample to the safety properties of `ABSpec`, as
+it should.
+
+```bash
+tlc -difftrace ABQ_nonfifo_ql.tla -config AB_ql3_safety_only.cfg
+```
+
+The counterexample found is nearly identical to the one in the earlier
+section linked above.  The only difference is that there is one more
+step, for `AWrite`, in order for A to be able to send a second
+message.
