@@ -92,7 +92,7 @@ BSnd ==
 (***************************************************************************)
 BRcv ==
     /\ AtoB /= << >>
-    /\ IF Head(AtoB)[2] # BVar[2]
+    /\ IF Head(AtoB)[2] /= BVar[2]
          THEN /\ BVar' = Head(AtoB)
               /\ BRcvd' = Append(BRcvd, BVar[1])
          ELSE /\ BVar' = BVar
