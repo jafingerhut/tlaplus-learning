@@ -33,6 +33,9 @@ vars == << AWait, AVar, AAcked, BVar, BRcvd, AtoB, BtoA >>
 
 TypeOK == /\ AVar \in Data \X {0,1}
           /\ BVar \in Data \X {0,1}
+          /\ AWait \in Seq(Data)
+          /\ AAcked \in Seq(Data)
+          /\ BRcvd \in Seq(Data)
           /\ AtoB \in Seq(Data \X {0,1})
           /\ BtoA \in Seq({0,1})
 
