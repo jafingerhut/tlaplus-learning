@@ -321,3 +321,85 @@ invariants:
 ```bash
 tlc ABQSpec_ql.tla -config ABQSpec_ql_safety_only.cfg
 ```
+
+
+# ABQ variant of AB
+
+It was not very difficult to modify spec AB to create spec ABQ that
+satisfies all of the safety properties of ABQSpec.  See files
+`ABQ.tla` and `ABQ_ql.tla`, which give no errors with this command:
+
+```bash
+tlc ABQ_ql.tla -config AB_ql3_safety_only.cfg
+```
+
+I expected this run with strong fairness of `ARcv` and `BRcv` steps to
+satisfy the liveness properties of `ABQSpec`, but for some reason it
+finds an error:
+
+```bash
+tlc -difftrace ABQ_ql.tla -config AB_ql3_fss_satisfies_fs.cfg
+```
+
+The counterexample trace of steps is:
+
+```
+State 1: <Initial predicate>
+/\ BRcvd = <<>>
+/\ AtoB = <<>>
+/\ BVar = <<d1, 1>>
+/\ AWait = <<>>
+/\ AVar = <<d1, 1>>
+/\ BtoA = <<>>
+/\ AAcked = <<>>
+
+State 2: <BSnd line 86, col 5 to line 87, col 59 of module ABQ>
+/\ BtoA = <<1>>
+
+State 3: <ASnd line 58, col 5 to line 59, col 59 of module ABQ>
+/\ AtoB = <<<<d1, 1>>>>
+
+State 4: <BRcv line 94, col 5 to line 101, col 46 of module ABQ>
+/\ AtoB = <<>>
+
+Back to state 1: <LoseMsgBtoA line 125, col 16 to line 127, col 72 of module ABQ>
+```
+
+I believe the problem is that I modified step `ARcv` to have these
+preconditions:
+
+```
+ARcv ==
+    /\ BtoA /= << >>
+    /\ AWait /= << >>
+    /\ ... next state conditions omitted ...
+```
+
+Because my definition of `FairSpecSS` in `ABQ.tla` when I ran the
+`tlc` command above was this:
+
+```
+FairSpecSS == Spec  /\  SF_vars(ARcv) /\ SF_vars(BRcv) /\
+                        WF_vars(ASnd) /\ WF_vars(BSnd)
+```
+
+there was no requirement to ever take any `AWrite(d)` steps.  Since
+none were taken in the counterexample trace above, step `ARcv` was
+never enabled.
+
+If I add a weak fairness requirement for taking `AWrite(d)` steps, as
+shown below, then `ARcv` should become enabled.
+
+```
+FairSpecSS == Spec  /\  SF_vars(ARcv) /\ SF_vars(BRcv) /\
+                        WF_vars(ASnd) /\ WF_vars(BSnd) /\
+			\A d \in Data: WF_vars(AWrite(d))
+```
+
+After making that change, and also updating `vars` to include all of
+the variables in `ABQ`, the following command gave no errors, and
+found 37632 distinct states:
+
+```bash
+tlc -difftrace ABQ_ql.tla -config AB_ql3_fss_satisfies_fs.cfg
+```
