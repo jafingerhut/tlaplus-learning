@@ -1,4 +1,4 @@
------------------------------- MODULE ABSpec2 --------------------------------
+------------------------------ MODULE ABQSpec --------------------------------
 (*
 
 Model the requirements of a reliable transport / data link protocol,

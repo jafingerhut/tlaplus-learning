@@ -1,5 +1,5 @@
------------------------------ MODULE ABSpec2_ql ------------------------------
-EXTENDS ABSpec2
+----------------------------- MODULE ABQSpec_ql ------------------------------
+EXTENDS ABQSpec
 
 CONSTANTS d1, d2, d3
 

@@ -302,22 +302,22 @@ All steps up to 6 to 8 are allowed by `ABSpec`, but step 8 to 9 is
 not.
 
 
-# ABSpec2 variant of ABSpec
+# ABQSpec variant of ABSpec
 
-I do not know if this is useful or not yet.  ABSpec2 is similar to
+I do not know if this is useful or not yet.  ABQSpec is similar to
 ABSpec, but it has variables to remember the history of messages sent
 from A and acknowledged by B, and a history of messages received by B.
 This is really a learning experiment at this point, and perhaps has
 significant disadvantages as compared to how ABSpec is written, but my
-hope is that I can create a variant of AB that extends ABSpec2, such
-that ABSpec2 detects problems with safety and/or liveness properties
+hope is that I can create a variant of AB that extends ABQSpec, such
+that ABQSpec detects problems with safety and/or liveness properties
 of those new versions of AB.
 
-To verify that `ABSpec2_qla`, which is just `ABSpec2` with some
+To verify that `ABQSpec_qla`, which is just `ABQSpec` with some
 constraints on the lengths of its sequence variables to avoid a
 too-large number of states to explore, satisfies a couple of
 invariants:
 
 ```bash
-tlc ABSpec2_ql.tla -config ABSpec2_ql_safety_only.cfg
+tlc ABQSpec_ql.tla -config ABQSpec_ql_safety_only.cfg
 ```
