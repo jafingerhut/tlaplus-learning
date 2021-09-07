@@ -10,8 +10,6 @@ EXTENDS Integers
 
 CONSTANT Data  \* The set of all possible data values.
 
-Data_value == {"d1", "d2", "d3"}
-
 VARIABLES AVar,   \* The last <<value, bit>> pair A decided to send.
           BVar    \* The last <<value, bit>> pair B received.
 
