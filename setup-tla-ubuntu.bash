@@ -6,7 +6,7 @@ source $HOME/jdks/setup-adoptopenjdk-hotspot-11-64bit.sh
 # This directory on my Ubuntu 20.04 system contains both the toolbox
 # executable, to start the TLA+ Toolbox, and also a copy of the file
 # tla2tools.jar
-TLA2TOOLS_DIR=$HOME/p4-docs/tlaplus-toolbox-1.7.1
+export TLA2TOOLS_DIR=$HOME/p4-docs/tlaplus-toolbox-1.7.1
 
 # Add the directory containing the toolbox command to PATH
 export PATH=$TLA2TOOLS_DIR:$PATH

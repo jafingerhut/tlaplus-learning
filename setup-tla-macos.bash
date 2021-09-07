@@ -1,6 +1,6 @@
 # This directory on my macOS system contains a copy of the file
 # tla2tools.jar
-TLA2TOOLS_DIR=$HOME/Documents/p4-docs/tlaplus/tlaplus-1.7.1
+export TLA2TOOLS_DIR=$HOME/Documents/p4-docs/tlaplus/tlaplus-1.7.1
 
 # Create bash aliases to provide short command names for command line
 # utilities.
