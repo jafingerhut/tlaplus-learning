@@ -2,10 +2,10 @@
 
 TLC="java -XX:+IgnoreUnrecognizedVMOptions -XX:+UseParallelGC -cp $TLA2TOOLS_DIR/tla2tools.jar tlc2.TLC"
 
-for j in `seq 1 5`
+for j in `seq 1 6`
 do
     case $j in
-	1) expected_status=0
+	1) expected_status=12
 	   ARGS="RTSpec_ql.tla"
 	   ;;
 	2) expected_status=0
@@ -19,6 +19,9 @@ do
 	   ;;
 	5) expected_status=0
 	   ARGS="AB_ql.tla -config AB_ql_fweaker_satisfies_fs.cfg"
+	   ;;
+	6) expected_status=12
+	   ARGS="-difftrace AB_nonfifo_ql.tla -config AB_ql_safety_only.cfg"
 	   ;;
     esac
     ${TLC} ${ARGS} >& out-$j.txt

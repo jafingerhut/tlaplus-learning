@@ -83,3 +83,20 @@ tlc AB_ql.tla -config AB_ql_fweaker_satisfies_fs.cfg
 ```
 
 TODO: What is going on here?
+
+
+# Alternating bit fails safety properties of RTSpec with non-FIFO links
+
+This is not anything new.  We have seen it before in the
+`alternating-bit-variants` directory.  I did this as a quick exercise
+to confirm that this version of AB fails to satisfy RTSpec's safety
+properties when links are not FIFO:
+
+```bash
+tlc -difftrace AB_nonfifo_ql.tla -config AB_ql_safety_only.cfg
+```
+
+I was slightly surprised to see that the counterexample found only
+used one value from the set `Data`.  The RTSpec safety property was
+violated because B reached a state where it had received 3 messages,
+but A had only produced 2.
