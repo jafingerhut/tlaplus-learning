@@ -11,7 +11,7 @@ Constraint_ql ==
     /\ Len(AtoB) =< 3
     /\ Len(BtoA) =< 3
 
-NotReallyInvariant == ~ /\ Len(BMsgs) > 3
+NotReallyInvariant == ~ /\ Len(BMsgs) > 4
                         /\ BMsgs[1] /= BMsgs[2]
                         /\ BMsgs[2] /= BMsgs[3]
                         /\ BMsgs[1] /= BMsgs[3]

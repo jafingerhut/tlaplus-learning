@@ -38,7 +38,7 @@ vars == <<AMsgs, BMsgs, AWait, AVar, BVar, AtoB, BtoA>>
 TypeOK == /\ AMsgs \in Seq(Data)
           /\ BMsgs \in Seq(Data)
           /\ AVar \in (Data \union {NullMsg}) \X {0,1}
-          /\ BVar \in (Data \union {NullMsg}) \X {0,1}
+          /\ BVar \in {0,1}
           /\ AWait \in Seq(Data)
           /\ AtoB \in Seq(Data \X {0,1})
           /\ BtoA \in Seq({0,1})
@@ -47,7 +47,7 @@ Init == /\ AMsgs = << >>
         /\ BMsgs = << >>
         /\ AWait = << >>
         /\ AVar = << NullMsg, 1 >>
-        /\ BVar = AVar
+        /\ BVar = 0
         /\ AtoB = << >>
         /\ BtoA = << >>
 
@@ -56,6 +56,17 @@ AWrite(d) ==
     /\ AWait' = Append(AWait, d)
     /\ AMsgs' = Append(AMsgs, d)
     /\ UNCHANGED <<BMsgs, AVar, BVar, AtoB, BtoA>>
+
+(***************************************************************************)
+(* The action of the sender "loading" a value from the beginning of the    *)
+(* queue AWait into AVar, so it becomes ready to transmit to the receiver. *)
+(***************************************************************************)
+Aload ==
+    /\ AVar[1] = NullMsg
+    /\ AWait /= << >>
+    /\ AVar' = <<Head(AWait), AVar[2]>>
+    /\ AWait' = Tail(AWait)
+    /\ UNCHANGED <<AMsgs, BMsgs, BVar, AtoB, BtoA>>
 
 (***************************************************************************)
 (* The action of the sender sending a data message by appending AVar to    *)
@@ -69,28 +80,26 @@ ASnd ==
 
 (***************************************************************************)
 (* The action of the sender receiving an ack message.  If that ack is for  *)
-(* the value it is sending, then it chooses another message to send and    *)
-(* sets AVar to that message.  If the ack is for the previous value it     *)
-(* sent, it ignores the message.  In either case, it removes the message   *)
-(* from BtoA.                                                              *)
+(* the value it is sending, then it replaces the remembered message with   *)
+(* NullMsg, as it was in the initial state, which leaves A ready to take   *)
+(* an Aload step whenever AWait is non-empty.  If the ack is for the       *)
+(* previous value it sent, it ignores the message.  In either case, it     *)
+(* removes the message from BtoA.                                          *)
 (***************************************************************************)
 ARcv ==
     /\ BtoA /= << >>
-    /\ AWait /= << >>
     /\ IF Head(BtoA) = AVar[2]
-         THEN /\ AVar' = <<Head(AWait), 1 - AVar[2]>>
-              /\ AWait' = Tail(AWait)
+         THEN /\ AVar' = <<NullMsg, 1 - AVar[2]>>
          ELSE /\ AVar' = AVar
-              /\ AWait' = AWait
     /\ BtoA' = Tail(BtoA)
-    /\ UNCHANGED <<AMsgs, BMsgs, AtoB, BVar>>
+    /\ UNCHANGED <<AMsgs, BMsgs, AWait, AtoB, BVar>>
 
 (***************************************************************************)
 (* The action of the receiver sending an acknowledgment message for the    *)
 (* last data item it received.                                             *)
 (***************************************************************************)
 BSnd ==
-    /\ BtoA' = Append(BtoA, BVar[2])
+    /\ BtoA' = Append(BtoA, BVar)
     /\ UNCHANGED <<AMsgs, BMsgs, AWait, AVar, AtoB, BVar>>
 
 (***************************************************************************)
@@ -99,11 +108,9 @@ BSnd ==
 (***************************************************************************)
 BRcv ==
     /\ AtoB /= << >>
-    /\ IF Head(AtoB)[2] /= BVar[2]
-         THEN /\ BVar' = Head(AtoB)
-              /\ BMsgs' = IF BVar[1] = NullMsg
-	                    THEN BMsgs
-			    ELSE Append(BMsgs, BVar[1])
+    /\ IF Head(AtoB)[2] /= BVar
+         THEN /\ BVar' = Head(AtoB)[2]
+              /\ BMsgs' = Append(BMsgs, Head(AtoB)[1])
          ELSE /\ BVar' = BVar
               /\ BMsgs' = BMsgs
     /\ AtoB' = Tail(AtoB)
@@ -123,6 +130,7 @@ LoseMsgBtoA == /\ \E i \in 1..Len(BtoA):
 
 Next ==
     \/ \E d \in Data: AWrite(d)
+    \/ Aload
     \/ ASnd
     \/ ARcv
     \/ BSnd
@@ -151,6 +159,8 @@ FairSpecSS == Spec  /\  SF_vars(ARcv) /\ SF_vars(BRcv) /\
 FairSpecWW == Spec  /\  WF_vars(ARcv) /\ WF_vars(BRcv) /\
                         WF_vars(ASnd) /\ WF_vars(BSnd) /\
 			\A d \in Data: WF_vars(AWrite(d))
+
+FairSpecWeaker == Spec  /\ \A d \in Data: WF_vars(AWrite(d))
 
 FairSpecWS == Spec  /\  WF_vars(ARcv) /\ SF_vars(BRcv) /\
                         WF_vars(ASnd) /\ WF_vars(BSnd) /\
