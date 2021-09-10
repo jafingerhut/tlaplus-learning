@@ -100,3 +100,23 @@ I was slightly surprised to see that the counterexample found only
 used one value from the set `Data`.  The RTSpec safety property was
 violated because B reached a state where it had received 3 messages,
 but A had only produced 2.
+
+
+# A first attempt at implementing a spec for Go-Back-N reliable transport
+
+`GBN.tla` contains a spec that is reasonably close to an
+implementation of a Go-Back-N sender and receiver, with FIFO links
+between them.
+
+The command below checks that it implements the safety properties of
+`RTSpec` when using 4 different sequence numbers (`NSeq`=4) and the
+sender limits itself to send at most 2 messages later than the last
+one that was acknowledged (the window size `W`=2).
+
+```bash
+tlc -difftrace GBN_ql.tla -config GBN_ql_NSeq-4-W-2-safety_only.cfg
+```
+
+Even with only 2 possible values in the set `Data` and constraints on
+various queue lengths that are quite short, TLC explores 423,000
+distinct states.
