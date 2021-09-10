@@ -120,3 +120,20 @@ tlc -difftrace GBN_ql.tla -config GBN_ql_NSeq-4-W-2-safety_only.cfg
 Even with only 2 possible values in the set `Data` and constraints on
 various queue lengths that are quite short, TLC explores 423,000
 distinct states.
+
+```bash
+tlc -difftrace GBN_ql.tla -config GBN_ql_NSeq-4-W-3-safety_only.cfg
+```
+
+The run above also finds no errors, after exploring 2,539,128 distinct
+states.
+
+```bash
+tlc -difftrace GBN_ql.tla -config GBN_ql_NSeq-4-W-4-safety_only.cfg
+```
+
+The run above finds a sequence of 19 states that violates the `RTSpec`
+safety properties, where the receiver accepts 5 messages when the
+sender only produced 4.  This is a well known issue when you try to
+have a window size that allows the sender to have as many new messages
+outstanding as there are sequence numbers.

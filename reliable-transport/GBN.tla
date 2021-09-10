@@ -26,7 +26,7 @@ CONSTANT W      \* The maximum number of different sequence numbers the sender c
 \* ASSUME ~(NullMsg \in Data)
 
 ASSUME NSeq \in Nat  /\  NSeq > 1
-ASSUME W \in Nat  /\  W > 0  /\  W < NSeq
+ASSUME W \in Nat  /\  W > 0  /\  W =< NSeq
 
 (***************************************************************************)
 (* We first define Remove(i, seq) to be the sequence obtained by removing  *)
@@ -55,7 +55,7 @@ TypeOK == /\ AMsgs \in Seq(Data)
           /\ AWait \in Seq(Data)
           /\ AVar \in [buf: [SeqNum -> Data],
                        win_begin: SeqNum,
-                       num_msgs: SeqNum,
+                       num_msgs: 0..W,
                        next_to_send: SeqNum]
           /\ BVar \in [exp_seqnum: SeqNum]
           /\ AtoB \in Seq(Data \X SeqNum)

@@ -2,7 +2,7 @@
 
 TLC="java -XX:+IgnoreUnrecognizedVMOptions -XX:+UseParallelGC -cp $TLA2TOOLS_DIR/tla2tools.jar tlc2.TLC"
 
-for j in `seq 1 6`
+for j in `seq 7 9`
 do
     case $j in
 	1) expected_status=12
@@ -22,6 +22,15 @@ do
 	   ;;
 	6) expected_status=12
 	   ARGS="-difftrace AB_nonfifo_ql.tla -config AB_ql_safety_only.cfg"
+	   ;;
+	7) expected_status=0
+	   ARGS="GBN_ql.tla -config GBN_ql_NSeq-4-W-2-safety_only.cfg"
+	   ;;
+	8) expected_status=0
+	   ARGS="GBN_ql.tla -config GBN_ql_NSeq-4-W-3-safety_only.cfg"
+	   ;;
+	9) expected_status=12
+	   ARGS="-difftrace GBN_ql.tla -config GBN_ql_NSeq-4-W-4-safety_only.cfg"
 	   ;;
     esac
     ${TLC} ${ARGS} >& out-$j.txt
