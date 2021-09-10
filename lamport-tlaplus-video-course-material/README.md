@@ -157,9 +157,9 @@ To run the model from the command line, create a file
 
 ```
 INIT
-Init
+  Init
 NEXT
-Next
+  Next
 ```
 
 Then run the command:
@@ -194,7 +194,7 @@ You can also do it by adding the following lines to the
 `-deadlock` option:
 ```
 CHECK_DEADLOCK
-FALSE
+  FALSE
 ```
 Even if you explicitly assign `TRUE` to `CHECK_DEADLOCK` in the `.cfg`
 file, the `-deadlock` command line option will override that.
@@ -226,9 +226,9 @@ following lines:
 
 ```
 INIT
-Init
+  Init
 NEXT
-Next
+  Next
 ```
 
 Then run the command:
@@ -265,11 +265,11 @@ following, adding the `INVARIANT` and `TypeOK` lines shown at the end:
 
 ```
 INIT
-Init
+  Init
 NEXT
-Next
+  Next
 INVARIANT
-TypeOK
+  TypeOK
 ```
 
 Then run the command:
@@ -389,15 +389,15 @@ following contents:
 
 ```
 CONSTANT
-RM <- RM_value
+  RM <- RM_value
 INIT
-TCInit
+  TCInit
 NEXT
-TCNext
+  TCNext
 INVARIANT
-TCTypeOK
+  TCTypeOK
 CHECK_DEADLOCK
-FALSE
+  FALSE
 ```
 
 Note that running TLC will give an error if you use a line like this
@@ -446,17 +446,17 @@ be:
 
 ```
 CONSTANT
-RM <- RM_value
+  RM <- RM_value
 INIT
-TCInit
+  TCInit
 NEXT
-TCNext
+  TCNext
 INVARIANT
-TCTypeOK
+  TCTypeOK
 CHECK_DEADLOCK
-FALSE
+  FALSE
 INVARIANT
-TCConsistent
+  TCConsistent
 ```
 
 
@@ -499,13 +499,13 @@ following contents:
 
 ```
 CONSTANT
-RM <- RM_value
+  RM <- RM_value
 INIT
-TPInit
+  TPInit
 NEXT
-TPNext
+  TPNext
 INVARIANT
-TPTypeOK
+  TPTypeOK
 ```
 
 Note that there is no need to add a line defining `RM_value` to
@@ -555,17 +555,17 @@ Create a file `TwoPhase.cfg` with the following contents:
 
 ```
 CONSTANT
-r1 = r1
-r2 = r2
-r3 = r3
-RM <- RM_value2
+  r1 = r1
+  r2 = r2
+  r3 = r3
+  RM <- RM_value2
 SYMMETRY RM_value2_permutations
 INIT
-TPInit
+  TPInit
 NEXT
-TPNext
+  TPNext
 INVARIANT
-TPTypeOK
+  TPTypeOK
 ```
 
 You must also add the following lines to `TwoPhase.tla`:
@@ -663,23 +663,23 @@ Create a file `TwoPhase.cfg` with the following contents:
 
 ```
 CONSTANT
-a1 = a1
-a2 = a2
-a3 = a3
-r1 = r1
-r2 = r2
-Ballot <- Ballot_value
-Acceptor <- Acceptor_value
-Majority <- Majority_value
-RM <- RM_value2
+  a1 = a1
+  a2 = a2
+  a3 = a3
+  r1 = r1
+  r2 = r2
+  Ballot <- Ballot_value
+  Acceptor <- Acceptor_value
+  Majority <- Majority_value
+  RM <- RM_value2
 SYMMETRY symmetry_value_permutations
 INIT
-PCInit
+  PCInit
 NEXT
-PCNext
+  PCNext
 INVARIANT
-PCTypeOK
-TCConsistent
+  PCTypeOK
+  TCConsistent
 ```
 
 TODO: I do not know why, but it is important that the lines giving
@@ -802,12 +802,12 @@ To run the model from the command line, create a file
 
 ```
 CONSTANT
-Data <- Data_value
+  Data <- Data_value
 SPECIFICATION
-Spec
+  Spec
 INVARIANT
-TypeOK
-Inv
+  TypeOK
+  Inv
 ```
 
 You must also add the following lines to `ABSpec.tla`:
@@ -871,14 +871,14 @@ To run the model from the command line, create a file
 
 ```
 CONSTANT
-Data <- Data_value
+  Data <- Data_value
 SPECIFICATION
-FairSpec
+  FairSpec
 INVARIANT
-TypeOK
-Inv
+  TypeOK
+  Inv
 PROPERTY
-Liveness_property_1
+  Liveness_property_1
 ```
 
 You must also add the following lines to `ABSpec.tla`:
@@ -987,18 +987,18 @@ Now create a file `ABplusconstraints.cfg` with the following contents:
 
 ```
 CONSTANT
-d1 = d1
-d2 = d2
-d3 = d3
-Data <- Data_value
+  d1 = d1
+  d2 = d2
+  d3 = d3
+  Data <- Data_value
 SPECIFICATION
-Spec
+  Spec
 CONSTRAINT
-Constraint_atmost3messages
+  Constraint_atmost3messages
 INVARIANT
-TypeOK
+  TypeOK
 PROPERTY
-ABS_Spec
+  ABS_Spec
 ```
 
 To run TLC on this new extended spec:
@@ -1059,18 +1059,18 @@ Now create a file `ABwithfairness.cfg` with the following contents:
 
 ```
 CONSTANT
-d1 = d1
-d2 = d2
-d3 = d3
-Data <- Data_value
+  d1 = d1
+  d2 = d2
+  d3 = d3
+  Data <- Data_value
 SPECIFICATION
-FairSpec
+  FairSpec
 CONSTRAINT
-Constraint_atmost3messages
+  Constraint_atmost3messages
 INVARIANT
-TypeOK
+  TypeOK
 PROPERTY
-ABS_Spec
+  ABS_Spec
 ```
 
 To run TLC on this new extended spec:
