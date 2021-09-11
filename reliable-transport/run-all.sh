@@ -1,5 +1,20 @@
 #! /bin/bash
 
+# OS detection
+function is_osx() {
+  [[ "$OSTYPE" =~ ^darwin ]] || return 1
+}
+function is_ubuntu() {
+  [[ "$(cat /etc/issue 2> /dev/null)" =~ Ubuntu ]] || return 1
+}
+
+if is_osx; then
+    TIME_CMD="/usr/bin/time -lp"
+fi
+if is_ubuntu; then
+    TIME_CMD="/usr/bin/time --verbose"
+fi
+
 TLC="java -XX:+IgnoreUnrecognizedVMOptions -XX:+UseParallelGC -cp $TLA2TOOLS_DIR/tla2tools.jar tlc2.TLC"
 
 for j in `seq 1 9`
@@ -33,10 +48,10 @@ do
 	   ARGS="-difftrace GBN_ql.tla -config GBN_ql_NSeq-4-W-4-safety_only.cfg"
 	   ;;
     esac
-    ${TLC} ${ARGS} >& out-$j.txt
+    ${TIME_CMD} ${TLC} ${ARGS} >& out-$j.txt
     exit_status=$?
     echo ""
-    echo "$j \$TLC ${ARGS}"
+    echo "$j $TIME_CMD \$TLC ${ARGS}"
     echo "exit_status: ${exit_status}"
     echo "expected_status: ${expected_status}"
     if [ $exit_status != $expected_status ]
