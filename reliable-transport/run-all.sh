@@ -39,13 +39,13 @@ do
 	   ARGS="-difftrace AB_nonfifo_ql.tla -config AB_ql_safety_only.cfg"
 	   ;;
 	7) expected_status=0
-	   ARGS="GBN_ql.tla -config GBN_ql_NSeq-4-W-2-safety_only.cfg"
+	   ARGS="GBN_fifo_ql.tla -config GBN_ql_NSeq-4-W-2-safety_only.cfg"
 	   ;;
 	8) expected_status=0
-	   ARGS="GBN_ql.tla -config GBN_ql_NSeq-4-W-3-safety_only.cfg"
+	   ARGS="GBN_fifo_ql.tla -config GBN_ql_NSeq-4-W-3-safety_only.cfg"
 	   ;;
 	9) expected_status=12
-	   ARGS="-difftrace GBN_ql.tla -config GBN_ql_NSeq-4-W-4-safety_only.cfg"
+	   ARGS="-difftrace GBN_fifo_ql.tla -config GBN_ql_NSeq-4-W-4-safety_only.cfg"
 	   ;;
     esac
     ${TIME_CMD} ${TLC} ${ARGS} >& out-$j.txt

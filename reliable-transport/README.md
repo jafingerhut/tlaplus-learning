@@ -110,7 +110,7 @@ but A had only produced 2.
 
 # A first attempt at implementing a spec for Go-Back-N reliable transport
 
-`GBN.tla` contains a spec that is reasonably close to an
+`GBN_fifo.tla` contains a spec that is reasonably close to an
 implementation of a Go-Back-N sender and receiver, with FIFO links
 between them.
 
@@ -120,7 +120,7 @@ sender limits itself to send at most 2 messages later than the last
 one that was acknowledged (the window size `W`=2).
 
 ```bash
-tlc -difftrace GBN_ql.tla -config GBN_ql_NSeq-4-W-2-safety_only.cfg
+tlc -difftrace GBN_fifo_ql.tla -config GBN_ql_NSeq-4-W-2-safety_only.cfg
 ```
 
 Even with only 2 possible values in the set `Data` and constraints on
@@ -128,14 +128,14 @@ various queue lengths that are quite short, TLC explores 423,000
 distinct states.
 
 ```bash
-tlc -difftrace GBN_ql.tla -config GBN_ql_NSeq-4-W-3-safety_only.cfg
+tlc -difftrace GBN_fifo_ql.tla -config GBN_ql_NSeq-4-W-3-safety_only.cfg
 ```
 
 The run above also finds no errors, after exploring 2,539,128 distinct
 states.
 
 ```bash
-tlc -difftrace GBN_ql.tla -config GBN_ql_NSeq-4-W-4-safety_only.cfg
+tlc -difftrace GBN_fifo_ql.tla -config GBN_ql_NSeq-4-W-4-safety_only.cfg
 ```
 
 The run above finds a sequence of 19 states that violates the `RTSpec`
