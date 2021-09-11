@@ -51,35 +51,41 @@ values of spec variables looked correct.
 # A version of the alternating bit protocol that implements RTSpec
 
 Starting from the original `AB.tla` given in Lamport's video course, I
-modified it so that the sender keeps a record of all messages it wants
-to send in variable `AMsgs`, and a record of all messages the receiver
-receives (in correct alternating bit sequence number order) in a
-variable `BMsgs`.  This command shows that it implements `RTSpec`'s
-safety properties.
+modified it to create `AB_fifo.tla`.  In `AB_fifo`, the sender keeps a
+record of all messages it wants to send in variable `AMsgs`, and a
+record of all messages the receiver receives (in correct alternating
+bit sequence number order) in a variable `BMsgs`.
+
+I also modified `AB_fifo` to use my module `ChannelFIFO`.  This has
+several definitions that, if you use them for the channels of messages
+between sender and receiver, can easily be switched to non-FIFO
+channels by extending module `ChannelNonFIFO` instead.
+
+This command shows that it implements `RTSpec`'s safety properties.
 
 ```bash
-tlc AB_ql.tla -config AB_ql_safety_only.cfg
+tlc AB_fifo_ql.tla -config AB_ql_safety_only.cfg
 ```
 
 And this command shows that it satisfies `RTSpec`'s liveness
 properties:
 
 ```bash
-tlc AB_ql.tla -config AB_ql_fss_satisfies_fs.cfg
+tlc AB_fifo_ql.tla -config AB_ql_fss_satisfies_fs.cfg
 ```
 
 I am a little surprised that AB implements the liveness properties,
 even using only WF on steps:
 
 ```bash
-tlc AB_ql.tla -config AB_ql_fww_satisfies_fs.cfg
+tlc AB_fifo_ql.tla -config AB_ql_fww_satisfies_fs.cfg
 ```
 
 I am very surprised that the following run finds no errors when
 checking liveness properties.
 
 ```bash
-tlc AB_ql.tla -config AB_ql_fweaker_satisfies_fs.cfg
+tlc AB_fifo_ql.tla -config AB_ql_fweaker_satisfies_fs.cfg
 ```
 
 TODO: What is going on here?

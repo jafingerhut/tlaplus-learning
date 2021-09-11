@@ -6,12 +6,12 @@ AB.tla from Leslie Lamport's TLA+ Course, Lecture 9, Part 2
 https://www.youtube.com/watch?v=EIDpC_iEVJ8
 "Lamport TLA+ Course Lecture 9: The Alternating Bit Protocol Part 2: The Protocol (HD)"
 
-More directly derived from AB.tla in this directory, changing links
-AtoB and BtoA so that they can reorder messages.
+This is a simple one-line change from AB_fifo.tla in this directory,
+changing only the EXTENDS of ChannelFIFO to ChannelNonFIFO.
 
 *)
 
-EXTENDS Integers, Sequences
+EXTENDS Integers, Sequences, ChannelNonFIFO
 
 CONSTANT Data
 
@@ -21,10 +21,8 @@ ASSUME ~(NullMsg \in Data)
 
 VARIABLES AMsgs, BMsgs,  \* The same as in module RTSpec
           AWait, AVar, BVar,
-          AtoB,  \* The set of data messages in transit from sender to receiver.
-          BtoA   \* The set of ack messages in transit from receiver to sender.
-                 \* Messages are sent by adding them to the set
-                 \* and received by removing them from the set.
+          AtoB,  \* The channel of data messages in transit from sender to receiver.
+          BtoA   \* The channel of ack messages in transit from receiver to sender.
 
 vars == <<AMsgs, BMsgs, AWait, AVar, BVar, AtoB, BtoA>>
 
@@ -33,16 +31,16 @@ TypeOK == /\ AMsgs \in Seq(Data)
           /\ AVar \in (Data \union {NullMsg}) \X {0,1}
           /\ BVar \in {0,1}
           /\ AWait \in Seq(Data)
-          /\ AtoB \in SUBSET(Data \X {0,1})
-          /\ BtoA \in SUBSET({0,1})
+          /\ AtoB \in ChannelType(Data \X {0,1})
+          /\ BtoA \in ChannelType({0,1})
 
 Init == /\ AMsgs = << >>
         /\ BMsgs = << >>
         /\ AWait = << >>
         /\ AVar = << NullMsg, 1 >>
         /\ BVar = 0
-        /\ AtoB = {}
-        /\ BtoA = {}
+        /\ AtoB = EmptyChannel
+        /\ BtoA = EmptyChannel
 
 AWrite(d) ==
     /\ d \in Data
@@ -62,13 +60,13 @@ Aload ==
     /\ UNCHANGED <<AMsgs, BMsgs, BVar, AtoB, BtoA>>
 
 (***************************************************************************)
-(* The action of the sender sending a data message adding AVar to          *)
-(* the set of messages AtoB.  It will keep sending the same                *)
+(* The action of the sender sending a data message by adding AVar to       *)
+(* the channel AtoB.  It will keep sending the same                        *)
 (* message until it receives an acknowledgment for it from the receiver.   *)
 (***************************************************************************)
 ASnd ==
     /\ AVar[1] /= NullMsg
-    /\ AtoB' = AtoB \union {AVar}
+    /\ AtoB' = ChannelAfterSendMsg(AtoB, AVar)
     /\ UNCHANGED <<AMsgs, BMsgs, AWait, AVar, BtoA, BVar>>
 
 (***************************************************************************)
@@ -80,12 +78,12 @@ ASnd ==
 (* removes the message from BtoA.                                          *)
 (***************************************************************************)
 ARcv ==
-    /\ BtoA /= {}
-    /\ \E ack_msg \in BtoA:
+    /\ BtoA /= EmptyChannel
+    /\ \E ack_msg \in SetOfReceivableMessages(BtoA):
            /\ IF ack_msg = AVar[2]
                 THEN /\ AVar' = <<NullMsg, 1 - AVar[2]>>
                 ELSE /\ AVar' = AVar
-           /\ BtoA' = BtoA \ {ack_msg}
+           /\ BtoA' = ChannelAfterReceiveMsg(BtoA, ack_msg)
     /\ UNCHANGED <<AMsgs, BMsgs, AWait, AtoB, BVar>>
 
 (***************************************************************************)
@@ -93,7 +91,7 @@ ARcv ==
 (* last data item it received.                                             *)
 (***************************************************************************)
 BSnd ==
-    /\ BtoA' = BtoA \union {BVar}
+    /\ BtoA' = ChannelAfterSendMsg(BtoA, BVar)
     /\ UNCHANGED <<AMsgs, BMsgs, AWait, AVar, AtoB, BVar>>
 
 (***************************************************************************)
@@ -101,26 +99,24 @@ BSnd ==
 (* that message if it's not for the data item it has already received.     *)
 (***************************************************************************)
 BRcv ==
-    /\ AtoB /= {}
-    /\ \E data_msg \in AtoB:
+    /\ AtoB /= EmptyChannel
+    /\ \E data_msg \in SetOfReceivableMessages(AtoB):
            /\ IF data_msg[2] /= BVar
                 THEN /\ BVar' = data_msg[2]
                      /\ BMsgs' = Append(BMsgs, data_msg[1])
                 ELSE /\ BVar' = BVar
                      /\ BMsgs' = BMsgs
-           /\ AtoB' = AtoB \ {data_msg}
+           /\ AtoB' = ChannelAfterReceiveMsg(AtoB, data_msg)
     /\ UNCHANGED <<AMsgs, AWait, AVar, BtoA>>
 
 (***************************************************************************)
-(* LoseMsgAtoB is the action that removes an arbitrary message from queue  *)
-(* AtoB.  LoseMsgBtoA does the same for queue BtoA.                        *)
+(* LoseMsgAtoB is the action that removes an arbitrary message from the    *)
+(* channel AtoB.  Similarly for LoseMsgBtoA.                               *)
 (***************************************************************************)
-LoseMsgAtoB == /\ \E data_msg \in AtoB:
-                       AtoB' = AtoB \ {data_msg}
+LoseMsgAtoB == /\ ChannelLoseMsg(AtoB)
                /\ UNCHANGED <<AMsgs, BMsgs, AWait, AVar, BVar, BtoA>>
 
-LoseMsgBtoA == /\ \E ack_msg \in BtoA:
-                       BtoA' = BtoA \ {ack_msg}
+LoseMsgBtoA == /\ ChannelLoseMsg(BtoA)
                /\ UNCHANGED <<AMsgs, BMsgs, AWait, AVar, BVar, AtoB>>
 
 Next ==
@@ -165,6 +161,3 @@ FairSpecSW == Spec  /\  SF_vars(ARcv) /\ WF_vars(BRcv) /\
                         WF_vars(ASnd) /\ WF_vars(BSnd) /\
 			\A d \in Data: WF_vars(AWrite(d))
 =============================================================================
-\* Modification History
-\* Last modified Wed Dec 27 13:29:51 PST 2017 by lamport
-\* Created Wed Mar 25 11:53:40 PDT 2015 by lamport
