@@ -143,3 +143,143 @@ safety properties, where the receiver accepts 5 messages when the
 sender only produced 4.  This is a well known issue when you try to
 have a window size that allows the sender to have as many new messages
 outstanding as there are sequence numbers.
+
+
+# Go-Back-N fails safety properties of RTSpec with non-FIFO links
+
+This command takes a fair amount of time (about 40 mins on my 2015 Mac
+laptop) before it finds a counterexample, because the state space is
+fairly large:
+
+```bash
+tlc -difftrace GBN_nonfifo_ql.tla -config GBN_ql_NSeq-4-W-2-safety_only.cfg
+```
+
+
+
+```
+Error: Invariant Inv is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ BMsgs = <<>>
+/\ AtoB = << >>
+/\ BVar = [exp_seqnum |-> 0]
+/\ AWait = <<>>
+/\ AMsgs = <<>>
+/\ AVar = [buf |-> (0 :> d1 @@ 1 :> d1 @@ 2 :> d1 @@ 3 :> d1), win_begin |-> 0, num_msgs |-> 0, next_to_send |-> 0]
+/\ BtoA = << >>
+
+State 2: <AWrite line 73, col 5 to line 76, col 50 of module GBN_nonfifo>
+/\ AWait = <<d1>>
+/\ AMsgs = <<d1>>
+
+State 3: <Aload line 84, col 5 to line 91, col 51 of module GBN_nonfifo>
+/\ AWait = <<>>
+/\ AVar = [buf |-> (0 :> d1 @@ 1 :> d1 @@ 2 :> d1 @@ 3 :> d1), win_begin |-> 0, num_msgs |-> 1, next_to_send |-> 0]
+
+State 4: <AWrite line 73, col 5 to line 76, col 50 of module GBN_nonfifo>
+/\ AWait = <<d1>>
+/\ AMsgs = <<d1, d1>>
+
+State 5: <Aload line 84, col 5 to line 91, col 51 of module GBN_nonfifo>
+/\ AWait = <<>>
+/\ AVar = [buf |-> (0 :> d1 @@ 1 :> d1 @@ 2 :> d1 @@ 3 :> d1), win_begin |-> 0, num_msgs |-> 2, next_to_send |-> 0]
+
+State 6: <AWrite line 73, col 5 to line 76, col 50 of module GBN_nonfifo>
+/\ AWait = <<d1>>
+/\ AMsgs = <<d1, d1, d1>>
+
+State 7: <ASnd line 99, col 5 to line 107, col 52 of module GBN_nonfifo>
+/\ AtoB = (<<d1, 0>> :> 1)
+/\ AVar = [buf |-> (0 :> d1 @@ 1 :> d1 @@ 2 :> d1 @@ 3 :> d1), win_begin |-> 0, num_msgs |-> 2, next_to_send |-> 1]
+
+State 8: <ASnd line 99, col 5 to line 107, col 52 of module GBN_nonfifo>
+/\ AtoB = (<<d1, 0>> :> 1 @@ <<d1, 1>> :> 1)
+/\ AVar = [buf |-> (0 :> d1 @@ 1 :> d1 @@ 2 :> d1 @@ 3 :> d1), win_begin |-> 0, num_msgs |-> 2, next_to_send |-> 0]
+
+State 9: <ASnd line 99, col 5 to line 107, col 52 of module GBN_nonfifo>
+/\ AtoB = (<<d1, 0>> :> 2 @@ <<d1, 1>> :> 1)
+/\ AVar = [buf |-> (0 :> d1 @@ 1 :> d1 @@ 2 :> d1 @@ 3 :> d1), win_begin |-> 0, num_msgs |-> 2, next_to_send |-> 1]
+
+State 10: <BRcv line 163, col 5 to line 173, col 45 of module GBN_nonfifo>
+/\ BMsgs = <<d1>>
+/\ AtoB = (<<d1, 0>> :> 1 @@ <<d1, 1>> :> 1)
+/\ BVar = [exp_seqnum |-> 1]
+
+State 11: <BRcv line 163, col 5 to line 173, col 45 of module GBN_nonfifo>
+/\ BMsgs = <<d1, d1>>
+/\ AtoB = (<<d1, 0>> :> 1)
+/\ BVar = [exp_seqnum |-> 2]
+
+State 12: <BSnd line 155, col 5 to line 156, col 58 of module GBN_nonfifo>
+/\ BtoA = (2 :> 1)
+
+State 13: <ARcv line 136, col 5 to line 148, col 52 of module GBN_nonfifo>
+/\ AVar = [buf |-> (0 :> d1 @@ 1 :> d1 @@ 2 :> d1 @@ 3 :> d1), win_begin |-> 2, num_msgs |-> 0, next_to_send |-> 2]
+/\ BtoA = << >>
+
+State 14: <Aload line 84, col 5 to line 91, col 51 of module GBN_nonfifo>
+/\ AWait = <<>>
+/\ AVar = [buf |-> (0 :> d1 @@ 1 :> d1 @@ 2 :> d1 @@ 3 :> d1), win_begin |-> 2, num_msgs |-> 1, next_to_send |-> 2]
+
+State 15: <AWrite line 73, col 5 to line 76, col 50 of module GBN_nonfifo>
+/\ AWait = <<d1>>
+/\ AMsgs = <<d1, d1, d1, d1>>
+
+State 16: <Aload line 84, col 5 to line 91, col 51 of module GBN_nonfifo>
+/\ AWait = <<>>
+/\ AVar = [buf |-> (0 :> d1 @@ 1 :> d1 @@ 2 :> d1 @@ 3 :> d1), win_begin |-> 2, num_msgs |-> 2, next_to_send |-> 2]
+
+State 17: <ASnd line 99, col 5 to line 107, col 52 of module GBN_nonfifo>
+/\ AtoB = (<<d1, 0>> :> 1 @@ <<d1, 2>> :> 1)
+/\ AVar = [buf |-> (0 :> d1 @@ 1 :> d1 @@ 2 :> d1 @@ 3 :> d1), win_begin |-> 2, num_msgs |-> 2, next_to_send |-> 3]
+
+State 18: <ASnd line 99, col 5 to line 107, col 52 of module GBN_nonfifo>
+/\ AtoB = (<<d1, 0>> :> 1 @@ <<d1, 2>> :> 1 @@ <<d1, 3>> :> 1)
+/\ AVar = [buf |-> (0 :> d1 @@ 1 :> d1 @@ 2 :> d1 @@ 3 :> d1), win_begin |-> 2, num_msgs |-> 2, next_to_send |-> 2]
+
+State 19: <BRcv line 163, col 5 to line 173, col 45 of module GBN_nonfifo>
+/\ BMsgs = <<d1, d1, d1>>
+/\ AtoB = (<<d1, 0>> :> 1 @@ <<d1, 3>> :> 1)
+/\ BVar = [exp_seqnum |-> 3]
+
+State 20: <BRcv line 163, col 5 to line 173, col 45 of module GBN_nonfifo>
+/\ BMsgs = <<d1, d1, d1, d1>>
+/\ AtoB = (<<d1, 0>> :> 1)
+/\ BVar = [exp_seqnum |-> 0]
+
+State 21: <BRcv line 163, col 5 to line 173, col 45 of module GBN_nonfifo>
+/\ BMsgs = <<d1, d1, d1, d1, d1>>
+/\ AtoB = << >>
+/\ BVar = [exp_seqnum |-> 1]
+/\ AWait = <<>>
+/\ AMsgs = <<d1, d1, d1, d1>>
+/\ AVar = [buf |-> (0 :> d1 @@ 1 :> d1 @@ 2 :> d1 @@ 3 :> d1), win_begin |-> 2, num_msgs |-> 2, next_to_send |-> 2]
+/\ BtoA = << >>
+
+769392 states generated, 114590 distinct states found, 32896 states left on queue.
+The depth of the complete state graph search is 21.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 6 and the 95th percentile is 3).
+Finished in 38min 10s at (2021-09-11 20:32:47)
+```
+
+The basic idea of this sequence is very straightforward:
+
++ The sender sends a window W's worth of messages with sequence
+  numbers 0 through W-1.
++ The sender retransmits the first message with sequence number 0.
++ The receiver receives and acknowledges the messages with sequence
+  numbers 0 through W-1.
++ The sender advances its window to [W, 2W-1] and sends W more
+  messages.
++ The receiver receives [W, 2W-1] and acks them all.
++ Repeat the steps above until the receiver is back to expecting
+  sequence number 0.
++ Now the old retransmitted message with sequence number 0 arrives at
+  the receiver, and is treated as if it were a new message with
+  sequence number 0 by the receiver.  The receiver has now accepted a
+  total of NSeq+1 messages, even though the sender has only produces
+  NSeq messages.
+
+This sequence generalizes to any integer values NSeq and W satisfying
+1 <= W < NSeq.

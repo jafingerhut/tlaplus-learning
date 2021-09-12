@@ -29,7 +29,7 @@ each message in flight, not more than one.
 
 *)
 
-EXTENDS Integers, Sequences
+EXTENDS Integers, Sequences, Utilities
 
 
 (***************************************************************************)
@@ -60,4 +60,6 @@ ChannelAfterReceiveMsg(C, M) == Tail(C)
 ChannelLoseMsg(C) == \E i \in 1..Len(C): C' = Remove(i, C)
 
 ChannelNumMsgs(C) == Len(C)
+
+ChannelMaxDuplicateMsgs(C) == BagMaxDuplicates(SeqToBag(C))
 =============================================================================

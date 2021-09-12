@@ -1,5 +1,5 @@
------------------------------ MODULE GBN_fifo_ql ------------------------------
-EXTENDS GBN_fifo
+------------------------- MODULE GBN_nonfifo_ql --------------------------
+EXTENDS GBN_nonfifo
 
 \* Using only 2 elements in Data_value instead of 3 significantly
 \* reduces the number of states that TLC needs to evaluate.
