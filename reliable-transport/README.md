@@ -155,7 +155,7 @@ fairly large:
 tlc -difftrace GBN_nonfifo_ql.tla -config GBN_ql_NSeq-4-W-2-safety_only.cfg
 ```
 
-
+Below is the counterexample trace found when I ran the command above:
 
 ```
 Error: Invariant Inv is violated.
@@ -283,3 +283,140 @@ The basic idea of this sequence is very straightforward:
 
 This sequence generalizes to any integer values NSeq and W satisfying
 1 <= W < NSeq.
+
+
+# How to implement reliable transport in the face of non-FIFO channels?
+
+I have not read the research papers [5] and [6] in the references
+section, but I believe the basic idea is that they prove under various
+assumptions that it is impossible to have all of the following
+properties satisfied simultaneously by a reliable transport protocol:
+
+(C1) One's goal is to have a reliable transport protocol that can
+     guarantee, worst case, that all messages are delivered in order
+     to the receiver, with liveness guarantees.
+
+(C2) Channels between endpoints can reorder or drop messages.
+
+(C3) Messages sent can have at most a fixed finite number of
+     additional bits, e.g. for header fields like sequence numbers,
+     over and above the contents of the data messages being
+     transported.
+
+(C4) Messages can be buffered in the network for an arbitrarily long
+     time before they are delivered.
+
+
+## Relaxing conditions C1 or C2
+
+(C1) is the goal of reliable transport, so we do not want to consider
+here violating that condition.
+
+It is typically impractical to try to violate (C2), at least the part
+about never dropping messages.  Guaranteeing FIFO order between two
+nodes in a network that can have routers or switches between them,
+using a routing protocol to route around failed links and/or nodes, is
+also difficult.
+
+
+## Relaxing condition C3
+
+If one is willing to violate (C3), then it is straightforward to
+simply use sequence numbers in messages that can grow as large as
+desired, e.g. using some variable-length encoding of sequence numbers,
+so that the sender never uses the same sequence number for more than
+one message.  In this way, the receiver never has any possibility of
+confusing one received message for a different one.
+
+Alternately, one can use a fixed number of bits for sequence numbers,
+but simply limit the number of messages that can be sent in a single
+reliable transport session to whatever will fit into that fixed number
+of bits.  For example, a 64-bit sequence number on packets enables
+sessions with up to 2^64 messages before the session must end.  In
+many cases, such a large but finite limit would be acceptable.
+
+
+## Relaxing condition C4
+
+I believe that relaxing condition (C4) is effectively what is done, or
+least _assumed_, for all reliable transport protocol implementations
+in wide use.
+
+* TCP
+* Infiniband RC mode
+
+Here is a relevant quote from [1]:
+
+    "Since packets can get lost, packets must sometimes be
+    retransmitted end-to-end, and since packets can be delayed
+    arbitrarily, a packet can be retransmitted while the earlier copy
+    of the packet is lurking in the network; that earlier copy can
+    then remain in the network until the packet numbering wraps
+    around, and the packet can then cause an uncorrectable error.
+    This scenario is perhaps highly unlikely, but it serves to show
+    that end-to-end recovery at the network or transport layer cannot
+    be guaranteed to work correctly if packets are sometimes lost,
+    sometimes get out of order, and sometimes become arbitrarily
+    delayed.
+
+    There are three possible ways out of the dilemma described above:
+
+    first, insist that the network layer use virtual circuits and
+    maintain ordering even if the path for a session is changed;
+
+    second, make the modulus for numbering packets so large that
+    errors of the foregoing type are acceptably unlikely;
+
+    and third, create a mechanism whereby packets are destroyed after
+    a maximum lifetime in the network, using a modulus large enough
+    that wraparound cannot occur in that time.
+
+    It is shown in Problem 2.43 that the reuqired modulus, using
+    selective repeat, must be twice the window size plus the maximum
+    number of packets of a session that can be transmitted while a
+    given packet is alive.  In Section 2.9 we discuss how the
+    transport protocol TCP uses a combination of the last two
+    approaches described above." [2]
+
+Another from [3]:
+
+    "The solution to these problems is to design timers and window
+    sizes carefully.  It is important that the packet-numbering space
+    be large enough so that the packet number cannot wrap around
+    during the worst-case delay time.  Thus, if it is conceivable that
+    a network could delay a packet by 15 sec, it must not be possible
+    for a transmitter, at maximum speed, to transmit enough packets so
+    that a packet number will wrap around within 15 sec.  If the
+    recipient holds on to packets that arrive out of order ..., it is
+    also important that the window be no larger than half the packet
+    number.  On strictly sequential channels [i.e. FIFO channels],
+    packet might be lost but never reordered.  If the recipient is
+    guarnateed to disard any packet except the one with the next
+    consecutive number, the window size can be as large as the packet
+    number size minus 1." [4]
+
+See also Homework problems 4 and 5 in Section 1.
+
+
+# References
+
+[1] Dimitri P. Bertsekas, Robert Gallager, "Data Networks, 2nd
+    edition", 1992, ISBN-0-13-200916-1
+
+[2] Section 2.8.2 "Packet Numbering, Window Flow Control, and Error
+    Recovery" of [1], pp. 115-116.
+
+[3] Radia Perlman, "Interconnections: bridges, routers, switches and
+    internetworking protocols, 2nd edition", 1999, ISBN-0-201-63448-1
+
+[4] Section 1.4 "Reliable Data Transfer Protocols" of [3], p. 16
+
+[5] Nancy Lynch, Yishay Mansour, Alan Fekete, "The Data Link Layer:
+    Two Impossibility Results", PODC '88: Proceedings of the seventh
+    annual ACM Symposium on Principles of distributed computing,
+    January 1988, https://dl.acm.org/doi/abs/10.1145/62546.62572
+
+[6] Da-Wei Wang, Lenore D. Zuck, "Tight Bounds for the Sequence
+    Transmission Problem", PODC '89: Proceedings of the eighth annual
+    ACM Symposium on Principles of distributed computing, June 1989,
+    https://doi.org/10.1145/72981.72986
