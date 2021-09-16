@@ -285,6 +285,79 @@ This sequence generalizes to any integer values NSeq and W satisfying
 1 <= W < NSeq.
 
 
+# A first attempt at implementing a spec for Selective Repeat ARQ reliable transport
+
+`SRA_fifo.tla` contains a spec that is at least one variant of an
+implementation of a Selective Repeat ARQ sender and receiver, with
+FIFO links between them.
+
+The command below checks that it implements the safety properties of
+`RTSpec` when using 4 different sequence numbers (`NSeq`=4) and the
+sender limits itself to send at most 2 messages later than the last
+one that was acknowledged (the window size `W`=2), and the receiver
+limits itself to accepting a window of 2 different sequence numbers,
+including the current expected sequence number up through that plus 1.
+
+```bash
+tlc -difftrace SRA_fifo_ql.tla -config SRA_ql_NSeq-4-W-2-safety_only.cfg
+```
+
+Even with only 2 possible values in the set `Data` and constraints on
+various queue lengths that are quite short, TLC explores 533,522
+distinct states.
+
+The following run with `NSeq`=4 and `W`=3 does find a violation of the
+`RTSpec` specification.
+
+```bash
+tlc -difftrace SRA_fifo_ql.tla -config SRA_ql_NSeq-4-W-3-safety_only.cfg
+```
+
+The counterexample has 20 steps, and ends with the receiver accepting
+5 messages when the sender only produced 4.  This is a well known
+issue when you try to have a window size that allows the sender and
+receiver to have over half of `NSeq` messages in their windows.
+
+Description of the steps:
+
+* Sender does AWrite step for 4 copies of data d1, 3 of them do Aload
+  into the sender's retransmission buffer.
+* Sender does ASnd 3 times.  AtoB contains d1 3 times, with seq #s 0, 1, 2.
+* B does BRcv of first message with seq # 0
+* A does ASnd, retransmitting d1 with seq # 0
+* B does BRcv of second message with seq # 1, and 3rd message with seq #2
+  * AtoB now contains only retransmitted d1 with seq # 0
+* B does BSnd to send ack # 3, the seq # of the next message it is expecting
+* A does ARcv to get ack #3, so its window start advances to 3
+* Aload to get 4th copy of d1 to send.  ASnd to send 4th copy of d1 with seq #3
+  * AtoB now contains retransmitted d1 with seq #0 and new one with seq #3
+* B does BRcv and misinterprets seq # 0 as _after_ seq #3, and accepts
+  and stores it in its resequencing buffer
+* B does BRcv for message with seq #3, and now releases that one, and
+  the one with seq #0, for a total of 5 copies of the message, when A
+  has only sent 4 copies.
+
+Just to double-check with slightly larger state space, try with
+`NSeq`=6 and `W`=3, which we expect should correctly implement the
+safety properties.  It finds no errors while generating 6,677,874
+distinct states.
+
+```bash
+tlc -difftrace SRA_fifo_ql.tla -config SRA_ql_NSeq-6-W-3-safety_only.cfg
+```
+
+The following one with `NSeq`=6 and `W`=4 has `W` greater than half of
+`NSeq`, so we expect it to find a counterexample violating the safety
+properties, which it does.
+
+```bash
+tlc -difftrace SRA_fifo_ql.tla -config SRA_ql_NSeq-6-W-4-safety_only.cfg
+```
+
+As expected, this finds a violation of RTSpec.  It takes 28 steps, and
+ends with B receiving 7 messages after A only produced 6.
+
+
 # How to implement reliable transport in the face of non-FIFO channels?
 
 I have not read the research papers [5] and [6] in the references

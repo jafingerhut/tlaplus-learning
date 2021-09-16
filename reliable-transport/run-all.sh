@@ -20,7 +20,8 @@ fi
 
 TLC="java -XX:+IgnoreUnrecognizedVMOptions -XX:+UseParallelGC -cp $TLA2TOOLS_DIR/tla2tools.jar tlc2.TLC"
 
-for j in `seq 1 10`
+#for j in `seq 1 14`
+for j in `seq 11 14`
 do
     # I do not want to bother giving an estimated compute time for all
     # of the TLC runs that are under 30 seconds, only for the longer
@@ -60,6 +61,22 @@ do
 	10) expected_status=12
 	    estimated_compute_sec=2280
 	    ARGS="-difftrace GBN_nonfifo_ql.tla -config GBN_ql_NSeq-4-W-2-safety_only.cfg"
+	    ;;
+	11) expected_status=0
+	    estimated_compute_sec=40
+	    ARGS="-difftrace SRA_fifo_ql.tla -config SRA_ql_NSeq-4-W-2-safety_only.cfg"
+	    ;;
+	12) expected_status=12
+	    estimated_compute_sec=20
+	    ARGS="-difftrace SRA_fifo_ql.tla -config SRA_ql_NSeq-4-W-3-safety_only.cfg"
+	    ;;
+	13) expected_status=0
+	    estimated_compute_sec=550
+	    ARGS="-difftrace SRA_fifo_ql.tla -config SRA_ql_NSeq-6-W-3-safety_only.cfg"
+	    ;;
+	14) expected_status=12
+	    estimated_compute_sec=550
+	    ARGS="-difftrace SRA_fifo_ql.tla -config SRA_ql_NSeq-6-W-4-safety_only.cfg"
 	    ;;
     esac
     echo ""
