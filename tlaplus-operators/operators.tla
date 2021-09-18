@@ -1,5 +1,5 @@
 ---- MODULE operators ----
-EXTENDS TLC, Integers
+EXTENDS TLC, Integers, Sequences
 
 ASSUME PrintT(<<"----------------------------------------------------------------------">>)
 ASSUME PrintT(<<"Selected syntax and operators">>)
@@ -99,16 +99,101 @@ ASSUME PrintT(<<>>)
 ASSUME PrintT(<<"EXCEPT is useful for defining new functions that are the same">>)
 ASSUME PrintT(<<"as an existing function, with one or several exceptions.">>)
 ASSUME PrintT(<<"  [fn1 EXCEPT ![1] = 18]  ", [fn1 EXCEPT ![1] = 18]>>)
+ASSUME PrintT(<<"  [fn1 EXCEPT ![1] = 18, ![3] = 5]  ", [fn1 EXCEPT ![1] = 18, ![3] = 5]>>)
+ASSUME PrintT(<<>>)
+ASSUME PrintT(<<"TLA+ functions of multiple arguments have domain that are sets">>)
+ASSUME PrintT(<<"of tuples: f[x,y,z] is an abbreviation for f[<<x,y,z>>].">>)
+ASSUME PrintT(<<"The following are two ways to write the same function:">>)
+ASSUME PrintT(<<"  [a \\in 0..2, b \\in 4..5 |-> b-a]", [a \in 0..2, b \in 4..5 |-> b-a]>>)
+ASSUME PrintT(<<"  [<<a, b>> \\in (0..2) \\X (4..5) |-> b-a]", [<<a, b>> \in (0..2) \X (4..5) |-> b-a]>>)
+
 
 ASSUME PrintT(<<"----------------------------------------------------------------------">>)
 ASSUME PrintT(<<"Section 16.1.8 Records">>)
 ASSUME PrintT(<<"----------------------------------------------------------------------">>)
-ASSUME PrintT(<<"TODO">>)
-
+ASSUME PrintT(<<"In TLA+ records are a bit like C structs or the fields of Java objects.">>)
+ASSUME PrintT(<<"They are simply a different syntax for a function from strings naming">>)
+ASSUME PrintT(<<"the fields, to the values of those fields.">>)
+ASSUME PrintT(<<>>)
+ASSUME PrintT(<<"The set of all records with field name">>)
+ASSUME PrintT(<<"  f1 that can take on value in set S1={0,1,2},">>)
+ASSUME PrintT(<<"  f2 that can take on value in set S2=BOOLEAN,">>)
+ASSUME PrintT(<<"  f3 that can take on value in set S3={\"a\", \"b\"},">>)
+ASSUME PrintT(<<"is written:">>)
+ASSUME PrintT(<<"  [f1: {4,7}, f2:BOOLEAN, f3:{\"a\", \"b\"}]  ",
+                   [f1: {4,7}, f2:BOOLEAN, f3:{"a", "b"}]>>)
+ASSUME PrintT(<<>>)
+ASSUME PrintT(<<"One record in that set can be written this way:">>)
+ASSUME PrintT(<<"  [f1 |-> 7, f2 |-> FALSE, f3 |-> \"a\"]  ",
+                   [f1 |-> 7, f2 |-> FALSE, f3 |-> "a"]>>)
+ASSUME PrintT(<<>>)
+ASSUME PrintT(<<"The EXCEPT expression works for records similarly to how it works for">>)
+ASSUME PrintT(<<"with only a slight difference in syntax:">>)
+rec1 == [f1 |-> 7, f2 |-> FALSE, f3 |-> "a"]
+ASSUME PrintT(<<"  rec1 == [f1 |-> 7, f2 |-> FALSE, f3:\"a\"]">>)
+ASSUME PrintT(<<"  [rec1 EXCEPT !.f2 = TRUE]  ",
+                   [rec1 EXCEPT !.f2 = TRUE]>>)
 ASSUME PrintT(<<"----------------------------------------------------------------------">>)
 ASSUME PrintT(<<"Section 16.1.9 Tuples">>)
 ASSUME PrintT(<<"----------------------------------------------------------------------">>)
-ASSUME PrintT(<<"TODO">>)
+ASSUME PrintT(<<"The set of all n-tuples where">>)
+ASSUME PrintT(<<"  tuple element number 1 is in the set S1={0,1,2},">>)
+ASSUME PrintT(<<"  tuple element number 2 is in the set S2=BOOLEAN,">>)
+ASSUME PrintT(<<"  tuple element number 3 is in the set S3={\"a\", \"b\"},">>)
+ASSUME PrintT(<<"is written:">>)
+ASSUME PrintT(<<"  {4,7} \\X BOOLEAN \\X {\"a\", \"b\"}  ",
+                   {4,7} \X BOOLEAN \X {"a", "b"}>>)
+ASSUME PrintT(<<>>)
+ASSUME PrintT(<<"One tuple in that set can be written this way:">>)
+ASSUME PrintT(<<"  <<7, FALSE, \"a\">>  ",
+                   <<7, FALSE, "a">>>>)
+ASSUME PrintT(<<>>)
+ASSUME PrintT(<<"An N-tuple in TLA+ is equivalent to a function with domain 1..N">>)
+tup1 == <<7, FALSE, "a">>
+ASSUME PrintT(<<"  tup1 == <<7, FALSE, \"a\">>">>)
+fnt1 == [i \in 1..3 |-> IF i=1 THEN 7 ELSE IF i=2 THEN FALSE ELSE "a"]
+ASSUME PrintT(<<"  fnt1 == [i \\in 1..3 |-> IF i=1 THEN 7 ELSE IF i=2 THEN FALSE ELSE \"a\"]">>)
+ASSUME PrintT(<<"  tup1 = fnt1  ",
+                   tup1 = fnt1>>)
+ASSUME PrintT(<<>>)
+ASSUME PrintT(<<"The 0-tuple is written << >>">>)
+ASSUME PrintT(<<>>)
+ASSUME PrintT(<<"The standard Sequences module uses n-tuples to represent">>)
+ASSUME PrintT(<<"sequences of length n">>)
+
+ASSUME PrintT(<<"----------------------------------------------------------------------">>)
+ASSUME PrintT(<<"Section 18.1 Module Sequences">>)
+ASSUME PrintT(<<"----------------------------------------------------------------------">>)
+ASSUME PrintT(<<"The set of all finite sequences with elements in S:">>)
+ASSUME PrintT(<<"  Seq(S)">>)
+ASSUME PrintT(<<"The length of sequence s:">>)
+ASSUME PrintT(<<"  Len(s)">>)
+seq1 == <<10, 20, 30>>
+ASSUME PrintT(<<"  seq1 == <<10, 20, 30>>">>)
+seq2 == <<"a", "b">>
+ASSUME PrintT(<<"  seq2 == <<\"a\", \"b\">>">>)
+ASSUME PrintT(<<"  Len(seq1)  ", Len(seq1)>>)
+ASSUME PrintT(<<"The concatenation of sequences s1 followed by s2:">>)
+ASSUME PrintT(<<"  s1 \\o s2      alternately: s1 \\circ s2">>)
+ASSUME PrintT(<<"  seq1 \\o seq2  ", seq1 \o seq2>>)
+ASSUME PrintT(<<"The sequence obtained by appending element e after the end of sequence s:">>)
+ASSUME PrintT(<<"  Append(s, e)">>)
+ASSUME PrintT(<<"  Append(seq1, 42)  ", Append(seq1, 42)>>)
+ASSUME PrintT(<<"The first element of sequence s:">>)
+ASSUME PrintT(<<"  Head(s)">>)
+ASSUME PrintT(<<"  Head(seq2)", Head(seq2)>>)
+ASSUME PrintT(<<"The sequence of all but the he first element of sequence s:">>)
+ASSUME PrintT(<<"  Tail(s)">>)
+ASSUME PrintT(<<"  Tail(seq2)", Tail(seq2)>>)
+ASSUME PrintT(<<"  Tail(Tail(seq2))", Tail(Tail(seq2))>>)
+ASSUME PrintT(<<"The sequence starting with element at index m, up to element at index n, inclusive:">>)
+ASSUME PrintT(<<"  SubSeq(s, m, n)">>)
+ASSUME PrintT(<<"  SubSeq(seq1, 3, 3)", SubSeq(seq1, 3, 3)>>)
+ASSUME PrintT(<<"The subsequence of s containing all elements e such that Test(e) is TRUE:">>)
+ASSUME PrintT(<<"  SelectSeq(s, Test(_))">>)
+MultipleOf4(n) == (n % 4) = 0
+ASSUME PrintT(<<"  MultipleOf4(n) == (n % 4) = 0">>)
+ASSUME PrintT(<<"  SelectSeq(seq1, MultipleOf4)", SelectSeq(seq1, MultipleOf4)>>)
 
 ASSUME PrintT(<<"----------------------------------------------------------------------">>)
 ASSUME PrintT(<<"Section 16.1.10 Strings">>)
