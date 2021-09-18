@@ -20,8 +20,7 @@ fi
 
 TLC="java -XX:+IgnoreUnrecognizedVMOptions -XX:+UseParallelGC -cp $TLA2TOOLS_DIR/tla2tools.jar tlc2.TLC"
 
-#for j in `seq 1 14`
-for j in `seq 11 14`
+for j in `seq 1 14`
 do
     # I do not want to bother giving an estimated compute time for all
     # of the TLC runs that are under 30 seconds, only for the longer
