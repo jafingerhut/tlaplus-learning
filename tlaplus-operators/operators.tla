@@ -1,5 +1,5 @@
 ---- MODULE operators ----
-EXTENDS TLC, Integers, Sequences
+EXTENDS TLC, Integers, Sequences, FiniteSets, Bags
 
 ASSUME PrintT(<<"----------------------------------------------------------------------">>)
 ASSUME PrintT(<<"Selected syntax and operators">>)
@@ -74,6 +74,14 @@ ASSUME PrintT(<<>>)
 ASSUME PrintT(<<"all values of expression e such that multiple variables are in their respective sets {e: x,y \\in S, z \\in T}:">>)
 ASSUME PrintT(<<"  {x+y-z: x,y \\in 10..12, z \\in 4..5}:", {x+y-z: x,y \in 10..12, z \in 4..6}>>)
 ASSUME PrintT(<<"  {<<x, y-z>>: x,y \\in 10..12, z \\in 4..5}:", {<<x, y-z>>: x,y \in 10..12, z \in 4..6}>>)
+
+\* todo \in \notin = /= #
+\* todo UNION SUBSET
+\* todo \subseteq
+\* todo \supseteq
+\* todo \cup or \union
+\* todo \cap or \intersect
+\* todo \ (set difference)
 
 ASSUME PrintT(<<"----------------------------------------------------------------------">>)
 ASSUME PrintT(<<"Section 16.1.7 Functions">>)
@@ -194,6 +202,106 @@ ASSUME PrintT(<<"  SelectSeq(s, Test(_))">>)
 MultipleOf4(n) == (n % 4) = 0
 ASSUME PrintT(<<"  MultipleOf4(n) == (n % 4) = 0">>)
 ASSUME PrintT(<<"  SelectSeq(seq1, MultipleOf4)", SelectSeq(seq1, MultipleOf4)>>)
+
+ASSUME PrintT(<<"----------------------------------------------------------------------">>)
+ASSUME PrintT(<<"Section 18.2 Module FiniteSets">>)
+ASSUME PrintT(<<"----------------------------------------------------------------------">>)
+ASSUME PrintT(<<"Determine whether a set S is finite:">>)
+ASSUME PrintT(<<"  IsFiniteSet(S)">>)
+ASSUME PrintT(<<"  IsFiniteSet({2,4,6})",
+                   IsFiniteSet({2,4,6})>>)
+ASSUME PrintT(<<"  IsFiniteSet(Nat)",
+                   IsFiniteSet(Nat)>>)
+ASSUME PrintT(<<"The cardinality of a set is defined only for finite sets:">>)
+ASSUME PrintT(<<"  Cardinality(S)">>)
+ASSUME PrintT(<<"  Cardinality({2,4,6})",
+                   Cardinality({2,4,6})>>)
+ASSUME PrintT(<<"  Cardinality(Nat)",
+                "tlc gives error 'Attempted to compute cardinality of the value Nat' if i attempts to evaluate this.">>)
+
+ASSUME PrintT(<<"----------------------------------------------------------------------">>)
+ASSUME PrintT(<<"Section 18.3 Module Bags">>)
+ASSUME PrintT(<<"----------------------------------------------------------------------">>)
+ASSUME PrintT(<<"The bag that contains one copy of every element of the set S">>)
+ASSUME PrintT(<<"  SetToBag(S)">>)
+ASSUME PrintT(<<"  SetToBag({1,2,4})",
+                   SetToBag({1,2,4})>>)
+ASSUME PrintT(<<"  SetToBag({\"a\",\"c\",\"c\"})",
+                   SetToBag({"a","b","c"})>>)
+ASSUME PrintT(<<"True iff B is a bag:">>)
+ASSUME PrintT(<<"  IsABag(B)">>)
+ASSUME PrintT(<<"  IsABag(SetToBag({1,2,3}))",
+                   IsABag(SetToBag({1,2,3}))>>)
+ASSUME PrintT(<<"  IsABag({1,2,3})",
+                   IsABag({1,2,3})>>)
+ASSUME PrintT(<<"The union of bags B1 and B2">>)
+ASSUME PrintT(<<"  B1 (+) B2     alternately:   B1 \\oplus B2">>)
+bag1 == SetToBag({1,2,4})
+ASSUME PrintT(<<"  bag1 == SetToBag({1,2,4})">>)
+ASSUME PrintT(<<"  bag1", bag1>>)
+bag2 == SetToBag({  2,4,5})
+ASSUME PrintT(<<"  bag2 == SetToBag({  2,4,5})">>)
+ASSUME PrintT(<<"  bag2", bag2>>)
+bag3 == bag1 \oplus bag2
+ASSUME PrintT(<<"  bag3 == bag1 \\oplus bag2">>)
+ASSUME PrintT(<<"  bag3", bag3>>)
+bag4 == bag3 \oplus bag3
+ASSUME PrintT(<<"  bag4 == bag3 \\oplus bag3">>)
+ASSUME PrintT(<<"  bag4", bag4>>)
+bag5 == SetToBag({      5,6,7})
+ASSUME PrintT(<<"  bag5 == SetToBag({      5,6,7})">>)
+ASSUME PrintT(<<"  bag5", bag5>>)
+ASSUME PrintT(<<"The set of elements that have at least one copy in bag B">>)
+ASSUME PrintT(<<"  BagToSet(B)">>)
+ASSUME PrintT(<<"  BagToSet(bag4)", BagToSet(bag4)>>)
+ASSUME PrintT(<<"The \\in operator for bags">>)
+ASSUME PrintT(<<"  BagIn(e, B)">>)
+ASSUME PrintT(<<"  BagIn(1, bag4)", BagIn(1, bag4)>>)
+ASSUME PrintT(<<"  BagIn(8, bag4)", BagIn(8, bag4)>>)
+ASSUME PrintT(<<"The empty bag">>)
+ASSUME PrintT(<<"  EmptyBag">>)
+ASSUME PrintT(<<"The number of copies of e in bag B">>)
+ASSUME PrintT(<<"  CopiesIn(e, B)">>)
+ASSUME PrintT(<<"  CopiesIn(1, bag4)", CopiesIn(1, bag4)>>)
+ASSUME PrintT(<<"  CopiesIn(8, bag4)", CopiesIn(8, bag4)>>)
+ASSUME PrintT(<<"The bag B1 with the elements of B2 removed">>)
+ASSUME PrintT(<<"  B1 (-) B2     alternately:   B1 \\ominus B2">>)
+ASSUME PrintT(<<"  bag4 \\ominus bag5", bag4 \ominus bag5>>)
+ASSUME PrintT(<<"The bag union of all elements of the set S of bags">>)
+ASSUME PrintT(<<"  BagUnion(S)">>)
+\* TODO: example
+ASSUME PrintT(<<"The subset operator for bags">>)
+ASSUME PrintT(<<"  B1 \\sqsubseteq B2">>)
+ASSUME PrintT(<<"  bag1 \\sqsubseteq bag4",
+                   bag1 \sqsubseteq bag4>>)
+ASSUME PrintT(<<"  bag1 \\sqsubseteq bag5",
+                   bag1 \sqsubseteq bag5>>)
+ASSUME PrintT(<<"The set of all subbags of bag B">>)
+ASSUME PrintT(<<"  SubBag(B)">>)
+\* TODO: example
+ASSUME PrintT(<<"The bag analog of the set {F(x): x \\in B} for a set B">>)
+ASSUME PrintT(<<"  BagOfAll(F(_), B)">>)
+\* TODO: example
+ASSUME PrintT(<<"The total number of copies of elements in bag B">>)
+ASSUME PrintT(<<"  BagCardinality(B)">>)
+ASSUME PrintT(<<"  BagCardinality(bag1)",
+                   BagCardinality(bag1)>>)
+ASSUME PrintT(<<"  BagCardinality(bag4)",
+                   BagCardinality(bag4)>>)
+
+\* TODO: Add SUBSET somewhere appropriate
+\* TODO: Add set operators like union intersection difference
+
+ASSUME PrintT(<<"----------------------------------------------------------------------">>)
+ASSUME PrintT(<<"Section 18.4 The Numbers Modules -- Naturals">>)
+ASSUME PrintT(<<"----------------------------------------------------------------------">>)
+
+\* todo Nat + - * a^b
+\* todo <= =< \leq
+\* todo >= \geq
+\* todo < >
+\* todo a..b
+\* todo \div  %
 
 ASSUME PrintT(<<"----------------------------------------------------------------------">>)
 ASSUME PrintT(<<"Section 16.1.10 Strings">>)
