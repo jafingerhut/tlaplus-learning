@@ -1,5 +1,5 @@
 TLC2 Version 2.16 of 31 December 2020 (rev: cdddf55)
-Running breadth-first search Model-Checking with fp 29 and seed -8583058527428670851 with 1 worker on 8 cores with 3641MB heap and 64MB offheap memory [pid: 31787] (Mac OS X 10.14.6 x86_64, AdoptOpenJDK 15.0.1 x86_64, MSBDiskFPSet, DiskStateQueue).
+Running breadth-first search Model-Checking with fp 109 and seed -8118089015340213936 with 1 worker on 8 cores with 3641MB heap and 64MB offheap memory [pid: 32045] (Mac OS X 10.14.6 x86_64, AdoptOpenJDK 15.0.1 x86_64, MSBDiskFPSet, DiskStateQueue).
 Parsing file /Users/andy/Documents/p4-docs/tlaplus/tlaplus-learning/tlaplus-cheatsheet/cheatsheet.tla
 Parsing file /private/var/folders/rv/2vbzx7zj64x4hss7rdl1xywc0000gn/T/TLC.tla
 Parsing file /private/var/folders/rv/2vbzx7zj64x4hss7rdl1xywc0000gn/T/Integers.tla
@@ -14,7 +14,7 @@ Semantic processing of module TLC
 Semantic processing of module Integers
 Semantic processing of module Bags
 Semantic processing of module cheatsheet
-Starting... (2021-09-20 14:21:59)
+Starting... (2021-09-20 14:39:43)
 <<"----------------------------------------------------------------------">>
 <<"Selected syntax and operators">>
 <<"(introduced 'out of order' here because they are so useful in">>
@@ -79,21 +79,21 @@ Starting... (2021-09-20 14:21:59)
 <<"enumerate elements of a set:">>
 <<"  {1, 5, 8}:", {1, 5, 8}>>
 <<>>
-<<"all x in set S such that condition p is TRUE {x \\in S: p}:">>
+<<"a set of all x in set S such that condition p is TRUE {x \\in S: p}:">>
 << "  {x \\in Nat: (x % 3) = 1}:",
    "tlc gives error 'Attempted to enumerate <expression> when S: Nat is not enumerable' when attempting to evalute such an expression for printing" >>
 <<>>
-<<"all x in set S such that condition p is TRUE {x \\in S: p}:">>
+<<"a set of all x in set S such that condition p is TRUE {x \\in S: p}:">>
 <<"  {x \\in 0..10: (x % 3) = 1}:", {1, 4, 7, 10}>>
 <<>>
-<< "all tuples in set S such that condition p is TRUE {<<a, b>> \\in set_of_tuples: p}:" >>
+<< "a set of all tuples in set S such that condition p is TRUE {<<a, b>> \\in set_of_tuples: p}:" >>
 << "  {<<a, b>> \\in (0..5) \\X (3..7) : a > b}:",
    {<<4, 3>>, <<5, 3>>, <<5, 4>>} >>
 <<>>
-<< "all values of expression e (usually containing x) such that x is in set S {e: x \\in S}:" >>
+<< "a set of all values of expression e (usually containing x) such that x is in set S {e: x \\in S}:" >>
 <<"  {7 * x: x \\in 0..10}:", {0, 7, 14, 21, 28, 35, 42, 49, 56, 63, 70}>>
 <<>>
-<< "all values of expression e such that multiple variables are in their respective sets {e: x,y \\in S, z \\in T}:" >>
+<< "a set of all values of expression e such that multiple variables are in their respective sets {e: x,y \\in S, z \\in T}:" >>
 <<"  {x+y-z: x,y \\in 10..12, z \\in 4..5}:", {14, 15, 16, 17, 18, 19, 20}>>
 << "  {<<x, y-z>>: x,y \\in 10..12, z \\in 4..5}:",
    { <<10, 4>>,
@@ -113,9 +113,6 @@ Starting... (2021-09-20 14:21:59)
      <<12, 8>> } >>
 <<>>
 <<"---------- common set operations ----------">>
-<<"set1 == {1,2,3}">>
-<<"set2 == {3,4,5}">>
-<<"set3 == {10,11,12}">>
 <<"Testing membership of elements in a set">>
 <<"  1 \\in {1,2,3}", TRUE>>
 <<"  1 \\in {4,5,6}", FALSE>>
@@ -124,26 +121,29 @@ Starting... (2021-09-20 14:21:59)
 <<"Equality between sets">>
 <<"  {1,2,3} = {3,2,1,2}", TRUE>>
 <<"  {1,2,3} /= {3,2,1,2}", FALSE>>
-<<"Set union, intersection, difference">>
-<< "  {1,2,3} \\union {10,11,12}     (alternate operator: \\cup)",
-   {1, 2, 3, 10, 11, 12} >>
+<<"Set union uses binary operator \\union or \\cup">>
+<<"  {1,2,3} \\union {10,11,12}", {1, 2, 3, 10, 11, 12}>>
 <<"  {1,2,3} \\union {3,11,12}", {1, 2, 3, 11, 12}>>
-<<"  {1,2,3} \\intersect {10,11,12}     (alternate operator: \\cap)", {}>>
+<<"Set intersection uses binary operator \\intersection or \\cap">>
+<<"  {1,2,3} \\intersect {10,11,12}", {}>>
 <<"  {1,2,3} \\intersect {2,11,12}", {2}>>
+<<"Set difference uses binary operator \\">>
 <<"  {1,2,3} \\ {10,11,12}", {1, 2, 3}>>
 <<"  {1,2,3} \\ {3,11,12}", {1, 2}>>
 <<"  {1,2,3} \\ {3,2,1,11,12}", {}>>
 <<"Subsets: Note there is no \\subset nor \\supseteq operator">>
 <<"  {1,2,3} \\subseteq {1,2,10,11,12}", FALSE>>
 <<"  {1,2,3} \\subseteq {1,2,3}", TRUE>>
-<<"UNION is takes a set of sets, and returns the union of all of those sets">>
+<<"UNION takes a set of sets, and returns the union of all of those sets">>
 <<"  UNION({{1,2,3}, {3,4,5}, {10,11,12}})", {1, 2, 3, 4, 5, 10, 11, 12}>>
 <<"SUBSET takes a set S, and returns the set of all subsets of S">>
+<<"also known as the power set of S">>
 <<"  SUBSET({1,2,3})", {{}, {1}, {2}, {3}, {1, 2}, {1, 3}, {2, 3}, {1, 2, 3}}>>
 <<"----------------------------------------------------------------------">>
 <<"Section 16.1.7 Functions">>
 <<"----------------------------------------------------------------------">>
-<<"The set of all functions with domain S and range T: [S -> T]">>
+<<"The set of all functions with domain S and range T:">>
+<<"  [S -> T]">>
 << "  [5..7 -> BOOLEAN  ",
    { (5 :> FALSE @@ 6 :> FALSE @@ 7 :> FALSE),
      (5 :> FALSE @@ 6 :> FALSE @@ 7 :> TRUE),
@@ -154,7 +154,8 @@ Starting... (2021-09-20 14:21:59)
      (5 :> TRUE @@ 6 :> TRUE @@ 7 :> FALSE),
      (5 :> TRUE @@ 6 :> TRUE @@ 7 :> TRUE) } >>
 <<>>
-<< "One function (unnamed) with domain S and value given by expression e: [x \\in S |-> e]" >>
+<<"One function (unnamed) with domain S and value given by expression e:">>
+<<"  [x \\in S |-> e]">>
 <<"  [x \\in 5..7 |-> 2*x-4]", (5 :> 6 @@ 6 :> 8 @@ 7 :> 10)>>
 <<>>
 <<"You can define a function with a name 'fcn' as follows:">>
@@ -203,13 +204,13 @@ Starting... (2021-09-20 14:21:59)
 <<"Section 16.1.8 Records">>
 <<"----------------------------------------------------------------------">>
 <<"In TLA+ records are a bit like C structs or the fields of Java objects.">>
-<<"They are simply a different syntax for a function from strings naming">>
+<<"They are simply a different TLA+ syntax for a function from strings naming">>
 <<"the fields, to the values of those fields.">>
 <<>>
 <<"The set of all records with field name">>
-<<"  f1 that can take on value in set S1={0,1,2},">>
-<<"  f2 that can take on value in set S2=BOOLEAN,">>
-<<"  f3 that can take on value in set S3={\"a\", \"b\"},">>
+<<"  f1 that can take on value in set {4,7},">>
+<<"  f2 that can take on value in set BOOLEAN,">>
+<<"  f3 that can take on value in set {\"a\", \"b\"},">>
 <<"is written:">>
 <<"  [f1: {4,7}, f2:BOOLEAN, f3:{\"a\", \"b\"}]  ", {[f1 |-> 4, f2 |-> FALSE, f3 |-> "a"], [f1 |-> 4, f2 |-> FALSE, f3 |-> "b"], [f1 |-> 4, f2 |-> TRUE, f3 |-> "a"], [f1 |-> 4, f2 |-> TRUE, f3 |-> "b"], [f1 |-> 7, f2 |-> FALSE, f3 |-> "a"], [f1 |-> 7, f2 |-> FALSE, f3 |-> "b"], [f1 |-> 7, f2 |-> TRUE, f3 |-> "a"], [f1 |-> 7, f2 |-> TRUE, f3 |-> "b"]}>>
 <<>>
@@ -217,16 +218,16 @@ Starting... (2021-09-20 14:21:59)
 <<"  [f1 |-> 7, f2 |-> FALSE, f3 |-> \"a\"]  ", [f1 |-> 7, f2 |-> FALSE, f3 |-> "a"]>>
 <<>>
 <<"The EXCEPT expression works for records similarly to how it works for">>
-<<"with only a slight difference in syntax:">>
+<<"other functions, with only a slight difference in syntax:">>
 <<"  rec1 == [f1 |-> 7, f2 |-> FALSE, f3:\"a\"]">>
 <<"  [rec1 EXCEPT !.f2 = TRUE]  ", [f1 |-> 7, f2 |-> TRUE, f3 |-> "a"]>>
 <<"----------------------------------------------------------------------">>
 <<"Section 16.1.9 Tuples">>
 <<"----------------------------------------------------------------------">>
 <<"The set of all n-tuples where">>
-<<"  tuple element number 1 is in the set S1={0,1,2},">>
-<<"  tuple element number 2 is in the set S2=BOOLEAN,">>
-<<"  tuple element number 3 is in the set S3={\"a\", \"b\"},">>
+<<"  tuple element number 1 is in the set {4,7},">>
+<<"  tuple element number 2 is in the set BOOLEAN,">>
+<<"  tuple element number 3 is in the set {\"a\", \"b\"},">>
 <<"is written:">>
 <<"  {4,7} \\X BOOLEAN \\X {\"a\", \"b\"}  ", {<<4, FALSE, "a">>, <<4, FALSE, "b">>, <<4, TRUE, "a">>, <<4, TRUE, "b">>, <<7, FALSE, "a">>, <<7, FALSE, "b">>, <<7, TRUE, "a">>, <<7, TRUE, "b">>}>>
 <<>>
@@ -389,11 +390,11 @@ Starting... (2021-09-20 14:21:59)
 <<"----------------------------------------------------------------------">>
 <<"TODO">>
 Computing initial states...
-Finished computing initial states: 0 distinct states generated at 2021-09-20 14:21:59.
+Finished computing initial states: 0 distinct states generated at 2021-09-20 14:39:43.
 Model checking completed. No error has been found.
   Estimates of the probability that TLC did not check all reachable states
   because two distinct states had the same fingerprint:
   calculated (optimistic):  val = 0.0
 0 states generated, 0 distinct states found, 0 states left on queue.
 The depth of the complete state graph search is 1.
-Finished in 00s at (2021-09-20 14:21:59)
+Finished in 00s at (2021-09-20 14:39:43)

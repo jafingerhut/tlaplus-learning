@@ -59,29 +59,23 @@ ASSUME PrintT(<<"---------------------------------------------------------------
 ASSUME PrintT(<<"enumerate elements of a set:">>)
 ASSUME PrintT(<<"  {1, 5, 8}:", {1,5,8}>>)
 ASSUME PrintT(<<>>)
-ASSUME PrintT(<<"all x in set S such that condition p is TRUE {x \\in S: p}:">>)
+ASSUME PrintT(<<"a set of all x in set S such that condition p is TRUE {x \\in S: p}:">>)
 ASSUME PrintT(<<"  {x \\in Nat: (x % 3) = 1}:", "tlc gives error 'Attempted to enumerate <expression> when S: Nat is not enumerable' when attempting to evalute such an expression for printing">>)
 ASSUME PrintT(<<>>)
-ASSUME PrintT(<<"all x in set S such that condition p is TRUE {x \\in S: p}:">>)
+ASSUME PrintT(<<"a set of all x in set S such that condition p is TRUE {x \\in S: p}:">>)
 ASSUME PrintT(<<"  {x \\in 0..10: (x % 3) = 1}:", {x \in 0..10: (x % 3) = 1}>>)
 ASSUME PrintT(<<>>)
-ASSUME PrintT(<<"all tuples in set S such that condition p is TRUE {<<a, b>> \\in set_of_tuples: p}:">>)
+ASSUME PrintT(<<"a set of all tuples in set S such that condition p is TRUE {<<a, b>> \\in set_of_tuples: p}:">>)
 ASSUME PrintT(<<"  {<<a, b>> \\in (0..5) \\X (3..7) : a > b}:", {<<a, b>> \in (0..5) \X (3..7) : a > b}>>)
 ASSUME PrintT(<<>>)
-ASSUME PrintT(<<"all values of expression e (usually containing x) such that x is in set S {e: x \\in S}:">>)
+ASSUME PrintT(<<"a set of all values of expression e (usually containing x) such that x is in set S {e: x \\in S}:">>)
 ASSUME PrintT(<<"  {7 * x: x \\in 0..10}:", {7 * x: x \in 0..10}>>)
 ASSUME PrintT(<<>>)
-ASSUME PrintT(<<"all values of expression e such that multiple variables are in their respective sets {e: x,y \\in S, z \\in T}:">>)
+ASSUME PrintT(<<"a set of all values of expression e such that multiple variables are in their respective sets {e: x,y \\in S, z \\in T}:">>)
 ASSUME PrintT(<<"  {x+y-z: x,y \\in 10..12, z \\in 4..5}:", {x+y-z: x,y \in 10..12, z \in 4..6}>>)
 ASSUME PrintT(<<"  {<<x, y-z>>: x,y \\in 10..12, z \\in 4..5}:", {<<x, y-z>>: x,y \in 10..12, z \in 4..6}>>)
 ASSUME PrintT(<<>>)
 ASSUME PrintT(<<"---------- common set operations ----------">>)
-set1 == {1,2,3}
-ASSUME PrintT(<<"set1 == {1,2,3}">>)
-set2 == {3,4,5}
-ASSUME PrintT(<<"set2 == {3,4,5}">>)
-set3 == {10,11,12}
-ASSUME PrintT(<<"set3 == {10,11,12}">>)
 ASSUME PrintT(<<"Testing membership of elements in a set">>)
 ASSUME PrintT(<<"  1 \\in {1,2,3}",
                    1 \in {1,2,3}>>)
@@ -96,15 +90,17 @@ ASSUME PrintT(<<"  {1,2,3} = {3,2,1,2}",
                    {1,2,3} = {3,2,1,2}>>)
 ASSUME PrintT(<<"  {1,2,3} /= {3,2,1,2}",
                    {1,2,3} /= {3,2,1,2}>>)
-ASSUME PrintT(<<"Set union, intersection, difference">>)
-ASSUME PrintT(<<"  {1,2,3} \\union {10,11,12}     (alternate operator: \\cup)",
+ASSUME PrintT(<<"Set union uses binary operator \\union or \\cup">>)
+ASSUME PrintT(<<"  {1,2,3} \\union {10,11,12}",
                    {1,2,3} \union {10,11,12}>>)
 ASSUME PrintT(<<"  {1,2,3} \\union {3,11,12}",
                    {1,2,3} \union {3,11,12}>>)
-ASSUME PrintT(<<"  {1,2,3} \\intersect {10,11,12}     (alternate operator: \\cap)",
+ASSUME PrintT(<<"Set intersection uses binary operator \\intersection or \\cap">>)
+ASSUME PrintT(<<"  {1,2,3} \\intersect {10,11,12}",
                    {1,2,3} \intersect {10,11,12}>>)
 ASSUME PrintT(<<"  {1,2,3} \\intersect {2,11,12}",
                    {1,2,3} \intersect {2,11,12}>>)
+ASSUME PrintT(<<"Set difference uses binary operator \\">>)
 ASSUME PrintT(<<"  {1,2,3} \\ {10,11,12}",
                    {1,2,3} \ {10,11,12}>>)
 ASSUME PrintT(<<"  {1,2,3} \\ {3,11,12}",
@@ -116,20 +112,23 @@ ASSUME PrintT(<<"  {1,2,3} \\subseteq {1,2,10,11,12}",
                    {1,2,3} \subseteq {1,2,10,11,12}>>)
 ASSUME PrintT(<<"  {1,2,3} \\subseteq {1,2,3}",
                    {1,2,3} \subseteq {1,2,3}>>)
-ASSUME PrintT(<<"UNION is takes a set of sets, and returns the union of all of those sets">>)
+ASSUME PrintT(<<"UNION takes a set of sets, and returns the union of all of those sets">>)
 ASSUME PrintT(<<"  UNION({{1,2,3}, {3,4,5}, {10,11,12}})",
                    UNION({{1,2,3}, {3,4,5}, {10,11,12}})>>)
 ASSUME PrintT(<<"SUBSET takes a set S, and returns the set of all subsets of S">>)
+ASSUME PrintT(<<"also known as the power set of S">>)
 ASSUME PrintT(<<"  SUBSET({1,2,3})",
                    SUBSET({1,2,3})>>)
 
 ASSUME PrintT(<<"----------------------------------------------------------------------">>)
 ASSUME PrintT(<<"Section 16.1.7 Functions">>)
 ASSUME PrintT(<<"----------------------------------------------------------------------">>)
-ASSUME PrintT(<<"The set of all functions with domain S and range T: [S -> T]">>)
+ASSUME PrintT(<<"The set of all functions with domain S and range T:">>)
+ASSUME PrintT(<<"  [S -> T]">>)
 ASSUME PrintT(<<"  [5..7 -> BOOLEAN  ", [5..7 -> BOOLEAN]>>)
 ASSUME PrintT(<<>>)
-ASSUME PrintT(<<"One function (unnamed) with domain S and value given by expression e: [x \\in S |-> e]">>)
+ASSUME PrintT(<<"One function (unnamed) with domain S and value given by expression e:">>)
+ASSUME PrintT(<<"  [x \\in S |-> e]">>)
 ASSUME PrintT(<<"  [x \\in 5..7 |-> 2*x-4]", [x \in 5..7 |-> 2*x-4]>>)
 ASSUME PrintT(<<>>)
 ASSUME PrintT(<<"You can define a function with a name 'fcn' as follows:">>)
@@ -160,13 +159,13 @@ ASSUME PrintT(<<"---------------------------------------------------------------
 ASSUME PrintT(<<"Section 16.1.8 Records">>)
 ASSUME PrintT(<<"----------------------------------------------------------------------">>)
 ASSUME PrintT(<<"In TLA+ records are a bit like C structs or the fields of Java objects.">>)
-ASSUME PrintT(<<"They are simply a different syntax for a function from strings naming">>)
+ASSUME PrintT(<<"They are simply a different TLA+ syntax for a function from strings naming">>)
 ASSUME PrintT(<<"the fields, to the values of those fields.">>)
 ASSUME PrintT(<<>>)
 ASSUME PrintT(<<"The set of all records with field name">>)
-ASSUME PrintT(<<"  f1 that can take on value in set S1={0,1,2},">>)
-ASSUME PrintT(<<"  f2 that can take on value in set S2=BOOLEAN,">>)
-ASSUME PrintT(<<"  f3 that can take on value in set S3={\"a\", \"b\"},">>)
+ASSUME PrintT(<<"  f1 that can take on value in set {4,7},">>)
+ASSUME PrintT(<<"  f2 that can take on value in set BOOLEAN,">>)
+ASSUME PrintT(<<"  f3 that can take on value in set {\"a\", \"b\"},">>)
 ASSUME PrintT(<<"is written:">>)
 ASSUME PrintT(<<"  [f1: {4,7}, f2:BOOLEAN, f3:{\"a\", \"b\"}]  ",
                    [f1: {4,7}, f2:BOOLEAN, f3:{"a", "b"}]>>)
@@ -176,7 +175,7 @@ ASSUME PrintT(<<"  [f1 |-> 7, f2 |-> FALSE, f3 |-> \"a\"]  ",
                    [f1 |-> 7, f2 |-> FALSE, f3 |-> "a"]>>)
 ASSUME PrintT(<<>>)
 ASSUME PrintT(<<"The EXCEPT expression works for records similarly to how it works for">>)
-ASSUME PrintT(<<"with only a slight difference in syntax:">>)
+ASSUME PrintT(<<"other functions, with only a slight difference in syntax:">>)
 rec1 == [f1 |-> 7, f2 |-> FALSE, f3 |-> "a"]
 ASSUME PrintT(<<"  rec1 == [f1 |-> 7, f2 |-> FALSE, f3:\"a\"]">>)
 ASSUME PrintT(<<"  [rec1 EXCEPT !.f2 = TRUE]  ",
@@ -185,9 +184,9 @@ ASSUME PrintT(<<"---------------------------------------------------------------
 ASSUME PrintT(<<"Section 16.1.9 Tuples">>)
 ASSUME PrintT(<<"----------------------------------------------------------------------">>)
 ASSUME PrintT(<<"The set of all n-tuples where">>)
-ASSUME PrintT(<<"  tuple element number 1 is in the set S1={0,1,2},">>)
-ASSUME PrintT(<<"  tuple element number 2 is in the set S2=BOOLEAN,">>)
-ASSUME PrintT(<<"  tuple element number 3 is in the set S3={\"a\", \"b\"},">>)
+ASSUME PrintT(<<"  tuple element number 1 is in the set {4,7},">>)
+ASSUME PrintT(<<"  tuple element number 2 is in the set BOOLEAN,">>)
+ASSUME PrintT(<<"  tuple element number 3 is in the set {\"a\", \"b\"},">>)
 ASSUME PrintT(<<"is written:">>)
 ASSUME PrintT(<<"  {4,7} \\X BOOLEAN \\X {\"a\", \"b\"}  ",
                    {4,7} \X BOOLEAN \X {"a", "b"}>>)
