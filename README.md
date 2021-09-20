@@ -44,9 +44,9 @@ examples of each TLA+ operator, including those defined in the
 standard modules, using the ASCII syntax rather than the
 pretty-printed version that I often forget what their ASCII
 equivalents are, I created the file
-[`cheatsheet.tla`](`tlaplus-cheatsheet/cheatsheet.tla`).  The output
-of running `tlc` on that file is in
-[`cheatsheet-tlc-out.txt`](`tlaplus-cheatsheet/cheatsheet-tlc-out.txt`).
+[`cheatsheet.tla`](tlaplus-cheatsheet/cheatsheet.tla).  The output of
+running `tlc` on that file is in
+[`cheatsheet-tlc-out.txt`](tlaplus-cheatsheet/cheatsheet-tlc-out.txt).
 I may take the time to create one that looks nicer than that, with
 both pretty-printed and ASCII versions in a PDF file, for example, but
 this file is highly useful to me as is.
