@@ -74,14 +74,54 @@ ASSUME PrintT(<<>>)
 ASSUME PrintT(<<"all values of expression e such that multiple variables are in their respective sets {e: x,y \\in S, z \\in T}:">>)
 ASSUME PrintT(<<"  {x+y-z: x,y \\in 10..12, z \\in 4..5}:", {x+y-z: x,y \in 10..12, z \in 4..6}>>)
 ASSUME PrintT(<<"  {<<x, y-z>>: x,y \\in 10..12, z \\in 4..5}:", {<<x, y-z>>: x,y \in 10..12, z \in 4..6}>>)
-
-\* todo \in \notin = /= #
-\* todo UNION SUBSET
-\* todo \subseteq
-\* todo \supseteq
-\* todo \cup or \union
-\* todo \cap or \intersect
-\* todo \ (set difference)
+ASSUME PrintT(<<>>)
+ASSUME PrintT(<<"---------- common set operations ----------">>)
+set1 == {1,2,3}
+ASSUME PrintT(<<"set1 == {1,2,3}">>)
+set2 == {3,4,5}
+ASSUME PrintT(<<"set2 == {3,4,5}">>)
+set3 == {10,11,12}
+ASSUME PrintT(<<"set3 == {10,11,12}">>)
+ASSUME PrintT(<<"Testing membership of elements in a set">>)
+ASSUME PrintT(<<"  1 \\in {1,2,3}",
+                   1 \in {1,2,3}>>)
+ASSUME PrintT(<<"  1 \\in {4,5,6}",
+                   1 \in {5,5,6}>>)
+ASSUME PrintT(<<"  1 \\notin {1,2,3}",
+                   1 \notin {1,2,3}>>)
+ASSUME PrintT(<<"  1 \\notin {4,5,6}",
+                   1 \notin {5,5,6}>>)
+ASSUME PrintT(<<"Equality between sets">>)
+ASSUME PrintT(<<"  {1,2,3} = {3,2,1,2}",
+                   {1,2,3} = {3,2,1,2}>>)
+ASSUME PrintT(<<"  {1,2,3} /= {3,2,1,2}",
+                   {1,2,3} /= {3,2,1,2}>>)
+ASSUME PrintT(<<"Set union, intersection, difference">>)
+ASSUME PrintT(<<"  {1,2,3} \\union {10,11,12}     (alternate operator: \\cup)",
+                   {1,2,3} \union {10,11,12}>>)
+ASSUME PrintT(<<"  {1,2,3} \\union {3,11,12}",
+                   {1,2,3} \union {3,11,12}>>)
+ASSUME PrintT(<<"  {1,2,3} \\intersect {10,11,12}     (alternate operator: \\cap)",
+                   {1,2,3} \intersect {10,11,12}>>)
+ASSUME PrintT(<<"  {1,2,3} \\intersect {2,11,12}",
+                   {1,2,3} \intersect {2,11,12}>>)
+ASSUME PrintT(<<"  {1,2,3} \\ {10,11,12}",
+                   {1,2,3} \ {10,11,12}>>)
+ASSUME PrintT(<<"  {1,2,3} \\ {3,11,12}",
+                   {1,2,3} \ {3,11,12}>>)
+ASSUME PrintT(<<"  {1,2,3} \\ {3,2,1,11,12}",
+                   {1,2,3} \ {3,2,1,11,12}>>)
+ASSUME PrintT(<<"Subsets: Note there is no \\subset nor \\supseteq operator">>)
+ASSUME PrintT(<<"  {1,2,3} \\subseteq {1,2,10,11,12}",
+                   {1,2,3} \subseteq {1,2,10,11,12}>>)
+ASSUME PrintT(<<"  {1,2,3} \\subseteq {1,2,3}",
+                   {1,2,3} \subseteq {1,2,3}>>)
+ASSUME PrintT(<<"UNION is takes a set of sets, and returns the union of all of those sets">>)
+ASSUME PrintT(<<"  UNION({{1,2,3}, {3,4,5}, {10,11,12}})",
+                   UNION({{1,2,3}, {3,4,5}, {10,11,12}})>>)
+ASSUME PrintT(<<"SUBSET takes a set S, and returns the set of all subsets of S">>)
+ASSUME PrintT(<<"  SUBSET({1,2,3})",
+                   SUBSET({1,2,3})>>)
 
 ASSUME PrintT(<<"----------------------------------------------------------------------">>)
 ASSUME PrintT(<<"Section 16.1.7 Functions">>)
@@ -269,7 +309,8 @@ ASSUME PrintT(<<"  B1 (-) B2     alternately:   B1 \\ominus B2">>)
 ASSUME PrintT(<<"  bag4 \\ominus bag5", bag4 \ominus bag5>>)
 ASSUME PrintT(<<"The bag union of all elements of the set S of bags">>)
 ASSUME PrintT(<<"  BagUnion(S)">>)
-\* TODO: example
+ASSUME PrintT(<<"  BagUnion({bag1,bag2,bag3,bag4})",
+                   BagUnion({bag1,bag2,bag3,bag4})>>)
 ASSUME PrintT(<<"The subset operator for bags">>)
 ASSUME PrintT(<<"  B1 \\sqsubseteq B2">>)
 ASSUME PrintT(<<"  bag1 \\sqsubseteq bag4",
@@ -278,10 +319,21 @@ ASSUME PrintT(<<"  bag1 \\sqsubseteq bag5",
                    bag1 \sqsubseteq bag5>>)
 ASSUME PrintT(<<"The set of all subbags of bag B">>)
 ASSUME PrintT(<<"  SubBag(B)">>)
-\* TODO: example
+bag6 == SetToBag({10,20}) (+) SetToBag({10})
+ASSUME PrintT(<<"  bag6 == SetToBag({10,20}) (+) SetToBag({10})">>)
+ASSUME PrintT(<<"  bag6", bag6>>)
+ASSUME PrintT(<<"  SubBag(bag6)",
+                   SubBag(bag6)>>)
 ASSUME PrintT(<<"The bag analog of the set {F(x): x \\in B} for a set B">>)
 ASSUME PrintT(<<"  BagOfAll(F(_), B)">>)
-\* TODO: example
+Triple(x) == 3*x
+ASSUME PrintT(<<"  Triple(x) == 3*x">>)
+ASSUME PrintT(<<"  BagOfAll(Triple, bag6)",
+                   BagOfAll(Triple, bag6)>>)
+Constant5(x) == 5+x-x
+ASSUME PrintT(<<"  Constant5(x) == 5+x-x">>)
+ASSUME PrintT(<<"  BagOfAll(Constant5, bag6)",
+                   BagOfAll(Constant5, bag6)>>)
 ASSUME PrintT(<<"The total number of copies of elements in bag B">>)
 ASSUME PrintT(<<"  BagCardinality(B)">>)
 ASSUME PrintT(<<"  BagCardinality(bag1)",
@@ -289,19 +341,36 @@ ASSUME PrintT(<<"  BagCardinality(bag1)",
 ASSUME PrintT(<<"  BagCardinality(bag4)",
                    BagCardinality(bag4)>>)
 
-\* TODO: Add SUBSET somewhere appropriate
-\* TODO: Add set operators like union intersection difference
-
 ASSUME PrintT(<<"----------------------------------------------------------------------">>)
 ASSUME PrintT(<<"Section 18.4 The Numbers Modules -- Naturals">>)
 ASSUME PrintT(<<"----------------------------------------------------------------------">>)
 
-\* todo Nat + - * a^b
-\* todo <= =< \leq
-\* todo >= \geq
-\* todo < >
-\* todo a..b
-\* todo \div  %
+ASSUME PrintT(<<"Addition, subtraction, multiplication, exponentiation">>)
+ASSUME PrintT(<<"  5+7", 5+7>>)
+ASSUME PrintT(<<"  7-5", 7-5>>)
+ASSUME PrintT(<<"  5-7", 5-7>>)
+ASSUME PrintT(<<"  2^9", 2^9>>)
+ASSUME PrintT(<<"Integer quotient and remainder">>)
+ASSUME PrintT(<<"  Note: TLA+ defines \\div and % so that the following is true:">>)
+ASSUME PrintT(<<"    a = b * (a \\div b) + (a % b)">>)
+ASSUME PrintT(<<"  for all integers a and b with b > 0.">>)
+ASSUME PrintT(<<"  5 \\div 3  and 5 % 3", 5 \div 3, 5 % 3>>)
+ASSUME PrintT(<<"  (-5) \\div 3  and (-5) % 3", (-5) \div 3, (-5) % 3>>)
+ASSUME PrintT(<<"Comparison of numbers">>)
+ASSUME PrintT(<<"  <= can also be written =< or \\leq">>)
+ASSUME PrintT(<<"  >= can also be written \\geq">>)
+ASSUME PrintT(<<"  -5 <= 5", -5 <= 5>>)
+ASSUME PrintT(<<"  5 <= 5", 5 <= 5>>)
+ASSUME PrintT(<<"  5 < 5", 5 < 5>>)
+ASSUME PrintT(<<"  -5 >= 5", -5 >= 5>>)
+ASSUME PrintT(<<"  5 > 5", 5 > 5>>)
+ASSUME PrintT(<<"Sets of numbers in a range">>)
+ASSUME PrintT(<<"  0..5", 0..5>>)
+ASSUME PrintT(<<"  Cardinality(0..5)", Cardinality(0..5)>>)
+ASSUME PrintT(<<"  5..5", 5..5>>)
+ASSUME PrintT(<<"  Cardinality(5..5)", Cardinality(5..5)>>)
+ASSUME PrintT(<<"  6..5", 6..5>>)
+ASSUME PrintT(<<"  Cardinality(6..5)", Cardinality(6..5)>>)
 
 ASSUME PrintT(<<"----------------------------------------------------------------------">>)
 ASSUME PrintT(<<"Section 16.1.10 Strings">>)
@@ -312,6 +381,4 @@ ASSUME PrintT(<<"---------------------------------------------------------------
 ASSUME PrintT(<<"Section 16.1.11 Numbers">>)
 ASSUME PrintT(<<"----------------------------------------------------------------------">>)
 ASSUME PrintT(<<"TODO">>)
-
-ASSUME PrintT(<<"something:", <<0..2, 1..3>>>>)
 ==========================
