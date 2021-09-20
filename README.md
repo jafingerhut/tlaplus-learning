@@ -18,7 +18,47 @@ on YouTube.
 
 The directory
 [`lamport-tlaplus-video-course-material`](lamport-tlaplus-video-course-material)
-in this repository contains `.tla` files mentioned in the course.
+in this repository contains `.tla` files mentioned in the course.  The
+[`README.md`](lamport-tlaplus-video-course-material/README.md) file in
+that directory contains detailed instructions for what steps to do in
+the TLA Toolbox GUI program to match what is suggested in the
+lectures, and in addition, how to do all of those steps using `tlc`
+from the command line.
+
+The directory [`andy-exercises`](andy-exercises) contains slightly
+modified versions of several files from the directory
+[`lamport-tlaplus-video-course-material`](lamport-tlaplus-video-course-material)
+which I edited while working through the exercises suggested in the
+lectures.
+
+The command line capabilities of `tlc` are documented thoroughly in
+the book ["Specifying
+Systems"](https://lamport.azurewebsites.net/tla/book.html), Chapter
+14.
+
+
+## My variants of the alternating bit protocol
+
+The directory [`alternating-bit-variants`](alternating-bit-variants)
+contains several variations and extensions of the alternating bit
+protocol, starting with the version given in Lamport's video Lecture
+9.  See the [`README.md`](alternating-bit-variants/README.md) file in
+that directory for the order that I created them, and comments on the
+results of running `tlc` on each one.
+
+
+## Other reliable transport protocols
+
+Starting from the alternating bit protocol, directory
+[`reliable-transport`](reliable-transport/README.md) contains a
+different specification [`RTSpec.tla`](reliable-transport/RTSpec.tla)
+for how a reliable transport protocol ought to behave, without
+reference to any alternating bits.
+
+That directory includes TLA+ implementations of a Go-Back-N protocol,
+and a Selective Repeat ARQ protocol.  See the
+[`reliable-transport`](reliable-transport/README.md) there for
+comments on the results of running `tlc` on each of them.
 
 
 ## Dr. TLA+ Series
@@ -40,9 +80,18 @@ https://groups.google.com/g/tlaplus
 
 ## TLA command line interface
 
-The [`tla-bin`](https://github.com/pmer/tla-bin) repository lets you
-install simple bash scripts that function as a command line interface
-to these commands:
+After learning about the `tla-bin` repository described below, I found
+that the scripts that it installs are so simple that if you use the
+Bash command line shell in Linux or macOS, it is quite easy to define
+Bash aliases that work the same for most purposes.
+
+See the files [`setup-tla-macos.bash`](setup-tla-macos.bash) and
+[`setup-tla-ubuntu.bash`](setup-tla-ubuntu.bash) in this directory for
+small scripts that I have successfully used on my macOS and Linux
+systems to create Bash aliases like `sany` and `tlc` for running these
+commands from a shell.  They would likely require modifications to
+work on your system, e.g. to specify the directory where you installed
+the TLA Toolbox.
 
 * `sany` (TODO how to get help on options): A parser and syntax
   checker for TLA+ specifications.  I do not know if there are command
@@ -67,6 +116,23 @@ to these commands:
 All of these tools, plus the TLAPS Proof System, are described on the
 [TLA+ Tools](https://lamport.azurewebsites.net/tla/tools.html) page.
 
+There is also documentation for doing this on the TLA documentation
+pages
+[here](https://lamport.azurewebsites.net/tla/standalone-tools.html?back-link=tools.html).
+
+
+### `tla-bin`
+
+The [`tla-bin`](https://github.com/pmer/tla-bin) repository lets you
+install simple bash scripts that function as a command line interface
+to these commands.  See the previous section for a basic idea of what
+each command does.
+
+* `sany`
+* `tlc`
+* `pcal`
+* `tlatex`
+
 I learned about `tla-bin` from the following article, which has a few
 tips on using it, but I suspect the "Specifying Systems" book is more
 in depth on this topic:
@@ -74,7 +140,3 @@ in depth on this topic:
 * Marianne Bellotti, "Introduction to TLA+ Model Checking in the
   Command Line", 2019-Jan-18,
   https://medium.com/software-safety/introduction-to-tla-model-checking-in-the-command-line-c6871700a6a2
-
-There is also documentation for doing this on the TLA documentation
-pages
-[here](https://lamport.azurewebsites.net/tla/standalone-tools.html?back-link=tools.html).
