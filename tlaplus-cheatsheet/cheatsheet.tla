@@ -1,4 +1,4 @@
----- MODULE operators ----
+---- MODULE cheatsheet ----
 EXTENDS TLC, Integers, Sequences, FiniteSets, Bags
 
 ASSUME PrintT(<<"----------------------------------------------------------------------">>)

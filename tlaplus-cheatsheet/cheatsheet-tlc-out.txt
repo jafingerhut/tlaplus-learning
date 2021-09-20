@@ -1,0 +1,399 @@
+TLC2 Version 2.16 of 31 December 2020 (rev: cdddf55)
+Running breadth-first search Model-Checking with fp 29 and seed -8583058527428670851 with 1 worker on 8 cores with 3641MB heap and 64MB offheap memory [pid: 31787] (Mac OS X 10.14.6 x86_64, AdoptOpenJDK 15.0.1 x86_64, MSBDiskFPSet, DiskStateQueue).
+Parsing file /Users/andy/Documents/p4-docs/tlaplus/tlaplus-learning/tlaplus-cheatsheet/cheatsheet.tla
+Parsing file /private/var/folders/rv/2vbzx7zj64x4hss7rdl1xywc0000gn/T/TLC.tla
+Parsing file /private/var/folders/rv/2vbzx7zj64x4hss7rdl1xywc0000gn/T/Integers.tla
+Parsing file /private/var/folders/rv/2vbzx7zj64x4hss7rdl1xywc0000gn/T/Sequences.tla
+Parsing file /private/var/folders/rv/2vbzx7zj64x4hss7rdl1xywc0000gn/T/FiniteSets.tla
+Parsing file /private/var/folders/rv/2vbzx7zj64x4hss7rdl1xywc0000gn/T/Bags.tla
+Parsing file /private/var/folders/rv/2vbzx7zj64x4hss7rdl1xywc0000gn/T/Naturals.tla
+Semantic processing of module Naturals
+Semantic processing of module Sequences
+Semantic processing of module FiniteSets
+Semantic processing of module TLC
+Semantic processing of module Integers
+Semantic processing of module Bags
+Semantic processing of module cheatsheet
+Starting... (2021-09-20 14:21:59)
+<<"----------------------------------------------------------------------">>
+<<"Selected syntax and operators">>
+<<"(introduced 'out of order' here because they are so useful in">>
+<<"creating examples for evaluation and printing)">>
+<<"----------------------------------------------------------------------">>
+<<"set of natural numbers in a range: 0..2  ", 0..2>>
+<< "cross product of sets results in a set of tuples: (0..2) \\X (3..5)  ",
+   { <<0, 3>>,
+     <<0, 4>>,
+     <<0, 5>>,
+     <<1, 3>>,
+     <<1, 4>>,
+     <<1, 5>>,
+     <<2, 3>>,
+     <<2, 4>>,
+     <<2, 5>> } >>
+<<"----------------------------------------------------------------------">>
+<<"Section 16.1.1 Boolean Operators">>
+<<"----------------------------------------------------------------------">>
+<<"BOOLEAN is the set of boolean values  ", {FALSE, TRUE}>>
+<<"logical AND, conjunction: TRUE /\\ TRUE  ", TRUE>>
+<<"logical OR,  disjunction: FALSE \\/ FALSE  ", FALSE>>
+<< "logical NOT, negation:    ~FALSE, \\lnot FALSE, \\neg FALSE  ",
+   TRUE,
+   TRUE,
+   TRUE >>
+<<"logical IMPLIES, implication: TRUE => FALSE  ", FALSE>>
+<<"logical EQUIVALENCE: FALSE <=> FALSE, FALSE \\equiv FALSE  ", TRUE, TRUE>>
+<<"---------- unbounded quantification ----------">>
+<< "unbounded universal quantifier, for all: \\A x: x > 0  ",
+   "tlc gives an error if it attempts to evaluate an unbounded \\A for printing" >>
+<< "unbounded existential quantifier, there exists: \\E x: x > 0  ",
+   "tlc gives an error if it attempts to evaluate an unbounded \\E for printing" >>
+<<"---------- bounded quantification ----------">>
+<< "bounded universal quantifier, for all: \\A x \\in Nat: x > 0  ",
+   "tlc gives error 'encountered a non-enumerable quantifier bound Nat' when attempting to evalute such an expression for printing" >>
+<< "bounded existential quantifier, there exists: \\E x \\in Nat: x > 0  ",
+   "tlc gives error 'encountered a non-enumerable quantifier bound Nat' when attempting to evalute such an expression for printing" >>
+<<"bounded universal quantifier, for all:">>
+<<"  \\A x \\in 0..5: x > 0  ", FALSE>>
+<<"bounded existential quantifier, there exists:">>
+<<"  \\E x \\in 0..5: x > 0  ", TRUE>>
+<<"bounded universal quantifier, for all, over multiple variables:">>
+<<"  \\A x \\in 0..5, y \\in 0..5: x + y > 0  ", FALSE>>
+<<"bounded existential quantifier, there exists, over multiple variables:">>
+<<"  \\E x \\in 0..5, y \\in 0..5: x + y > 0  ", TRUE>>
+<<"----------------------------------------------------------------------">>
+<<"Section 16.1.2 The Choose Operator">>
+<<"----------------------------------------------------------------------">>
+<<"TODO">>
+<<"----------------------------------------------------------------------">>
+<<"Section 16.1.4 Conditional Constructs">>
+<<"----------------------------------------------------------------------">>
+<<"TODO">>
+<<"----------------------------------------------------------------------">>
+<<"Section 16.1.5 The Let/In Construct">>
+<<"----------------------------------------------------------------------">>
+<<"TODO">>
+<<"----------------------------------------------------------------------">>
+<<"Section 16.1.6 The Operators of Set Theory">>
+<<"----------------------------------------------------------------------">>
+<<"enumerate elements of a set:">>
+<<"  {1, 5, 8}:", {1, 5, 8}>>
+<<>>
+<<"all x in set S such that condition p is TRUE {x \\in S: p}:">>
+<< "  {x \\in Nat: (x % 3) = 1}:",
+   "tlc gives error 'Attempted to enumerate <expression> when S: Nat is not enumerable' when attempting to evalute such an expression for printing" >>
+<<>>
+<<"all x in set S such that condition p is TRUE {x \\in S: p}:">>
+<<"  {x \\in 0..10: (x % 3) = 1}:", {1, 4, 7, 10}>>
+<<>>
+<< "all tuples in set S such that condition p is TRUE {<<a, b>> \\in set_of_tuples: p}:" >>
+<< "  {<<a, b>> \\in (0..5) \\X (3..7) : a > b}:",
+   {<<4, 3>>, <<5, 3>>, <<5, 4>>} >>
+<<>>
+<< "all values of expression e (usually containing x) such that x is in set S {e: x \\in S}:" >>
+<<"  {7 * x: x \\in 0..10}:", {0, 7, 14, 21, 28, 35, 42, 49, 56, 63, 70}>>
+<<>>
+<< "all values of expression e such that multiple variables are in their respective sets {e: x,y \\in S, z \\in T}:" >>
+<<"  {x+y-z: x,y \\in 10..12, z \\in 4..5}:", {14, 15, 16, 17, 18, 19, 20}>>
+<< "  {<<x, y-z>>: x,y \\in 10..12, z \\in 4..5}:",
+   { <<10, 4>>,
+     <<10, 5>>,
+     <<10, 6>>,
+     <<10, 7>>,
+     <<10, 8>>,
+     <<11, 4>>,
+     <<11, 5>>,
+     <<11, 6>>,
+     <<11, 7>>,
+     <<11, 8>>,
+     <<12, 4>>,
+     <<12, 5>>,
+     <<12, 6>>,
+     <<12, 7>>,
+     <<12, 8>> } >>
+<<>>
+<<"---------- common set operations ----------">>
+<<"set1 == {1,2,3}">>
+<<"set2 == {3,4,5}">>
+<<"set3 == {10,11,12}">>
+<<"Testing membership of elements in a set">>
+<<"  1 \\in {1,2,3}", TRUE>>
+<<"  1 \\in {4,5,6}", FALSE>>
+<<"  1 \\notin {1,2,3}", FALSE>>
+<<"  1 \\notin {4,5,6}", TRUE>>
+<<"Equality between sets">>
+<<"  {1,2,3} = {3,2,1,2}", TRUE>>
+<<"  {1,2,3} /= {3,2,1,2}", FALSE>>
+<<"Set union, intersection, difference">>
+<< "  {1,2,3} \\union {10,11,12}     (alternate operator: \\cup)",
+   {1, 2, 3, 10, 11, 12} >>
+<<"  {1,2,3} \\union {3,11,12}", {1, 2, 3, 11, 12}>>
+<<"  {1,2,3} \\intersect {10,11,12}     (alternate operator: \\cap)", {}>>
+<<"  {1,2,3} \\intersect {2,11,12}", {2}>>
+<<"  {1,2,3} \\ {10,11,12}", {1, 2, 3}>>
+<<"  {1,2,3} \\ {3,11,12}", {1, 2}>>
+<<"  {1,2,3} \\ {3,2,1,11,12}", {}>>
+<<"Subsets: Note there is no \\subset nor \\supseteq operator">>
+<<"  {1,2,3} \\subseteq {1,2,10,11,12}", FALSE>>
+<<"  {1,2,3} \\subseteq {1,2,3}", TRUE>>
+<<"UNION is takes a set of sets, and returns the union of all of those sets">>
+<<"  UNION({{1,2,3}, {3,4,5}, {10,11,12}})", {1, 2, 3, 4, 5, 10, 11, 12}>>
+<<"SUBSET takes a set S, and returns the set of all subsets of S">>
+<<"  SUBSET({1,2,3})", {{}, {1}, {2}, {3}, {1, 2}, {1, 3}, {2, 3}, {1, 2, 3}}>>
+<<"----------------------------------------------------------------------">>
+<<"Section 16.1.7 Functions">>
+<<"----------------------------------------------------------------------">>
+<<"The set of all functions with domain S and range T: [S -> T]">>
+<< "  [5..7 -> BOOLEAN  ",
+   { (5 :> FALSE @@ 6 :> FALSE @@ 7 :> FALSE),
+     (5 :> FALSE @@ 6 :> FALSE @@ 7 :> TRUE),
+     (5 :> FALSE @@ 6 :> TRUE @@ 7 :> FALSE),
+     (5 :> FALSE @@ 6 :> TRUE @@ 7 :> TRUE),
+     (5 :> TRUE @@ 6 :> FALSE @@ 7 :> FALSE),
+     (5 :> TRUE @@ 6 :> FALSE @@ 7 :> TRUE),
+     (5 :> TRUE @@ 6 :> TRUE @@ 7 :> FALSE),
+     (5 :> TRUE @@ 6 :> TRUE @@ 7 :> TRUE) } >>
+<<>>
+<< "One function (unnamed) with domain S and value given by expression e: [x \\in S |-> e]" >>
+<<"  [x \\in 5..7 |-> 2*x-4]", (5 :> 6 @@ 6 :> 8 @@ 7 :> 10)>>
+<<>>
+<<"You can define a function with a name 'fcn' as follows:">>
+<<"  fcn[x \\in S] == e">>
+<<"Example: fn1[x \\in 0..3] == IF x = 3 THEN 0 ELSE x+1">>
+<<"  fn1  ", (0 :> 1 @@ 1 :> 2 @@ 2 :> 3 @@ 3 :> 0)>>
+<<>>
+<<"You can define a recursive function by using the function's">>
+<<"name in its definition.">>
+<<"Example: fib[x \\in 0..8] == IF x < 2 THEN 1 ELSE fib[x-1] + fib[x-2]">>
+<< "  fib  ",
+   ( 0 :> 1 @@
+     1 :> 1 @@
+     2 :> 2 @@
+     3 :> 3 @@
+     4 :> 5 @@
+     5 :> 8 @@
+     6 :> 13 @@
+     7 :> 21 @@
+     8 :> 34 ) >>
+<<>>
+<<"EXCEPT is useful for defining new functions that are the same">>
+<<"as an existing function, with one or several exceptions.">>
+<<"  [fn1 EXCEPT ![1] = 18]  ", (0 :> 1 @@ 1 :> 18 @@ 2 :> 3 @@ 3 :> 0)>>
+<< "  [fn1 EXCEPT ![1] = 18, ![3] = 5]  ",
+   (0 :> 1 @@ 1 :> 18 @@ 2 :> 3 @@ 3 :> 5) >>
+<<>>
+<<"TLA+ functions of multiple arguments have domain that are sets">>
+<<"of tuples: f[x,y,z] is an abbreviation for f[<<x,y,z>>].">>
+<<"The following are two ways to write the same function:">>
+<< "  [a \\in 0..2, b \\in 4..5 |-> b-a]",
+   ( <<0, 4>> :> 4 @@
+     <<0, 5>> :> 5 @@
+     <<1, 4>> :> 3 @@
+     <<1, 5>> :> 4 @@
+     <<2, 4>> :> 2 @@
+     <<2, 5>> :> 3 ) >>
+<< "  [<<a, b>> \\in (0..2) \\X (4..5) |-> b-a]",
+   ( <<0, 4>> :> 4 @@
+     <<0, 5>> :> 5 @@
+     <<1, 4>> :> 3 @@
+     <<1, 5>> :> 4 @@
+     <<2, 4>> :> 2 @@
+     <<2, 5>> :> 3 ) >>
+<<"----------------------------------------------------------------------">>
+<<"Section 16.1.8 Records">>
+<<"----------------------------------------------------------------------">>
+<<"In TLA+ records are a bit like C structs or the fields of Java objects.">>
+<<"They are simply a different syntax for a function from strings naming">>
+<<"the fields, to the values of those fields.">>
+<<>>
+<<"The set of all records with field name">>
+<<"  f1 that can take on value in set S1={0,1,2},">>
+<<"  f2 that can take on value in set S2=BOOLEAN,">>
+<<"  f3 that can take on value in set S3={\"a\", \"b\"},">>
+<<"is written:">>
+<<"  [f1: {4,7}, f2:BOOLEAN, f3:{\"a\", \"b\"}]  ", {[f1 |-> 4, f2 |-> FALSE, f3 |-> "a"], [f1 |-> 4, f2 |-> FALSE, f3 |-> "b"], [f1 |-> 4, f2 |-> TRUE, f3 |-> "a"], [f1 |-> 4, f2 |-> TRUE, f3 |-> "b"], [f1 |-> 7, f2 |-> FALSE, f3 |-> "a"], [f1 |-> 7, f2 |-> FALSE, f3 |-> "b"], [f1 |-> 7, f2 |-> TRUE, f3 |-> "a"], [f1 |-> 7, f2 |-> TRUE, f3 |-> "b"]}>>
+<<>>
+<<"One record in that set can be written this way:">>
+<<"  [f1 |-> 7, f2 |-> FALSE, f3 |-> \"a\"]  ", [f1 |-> 7, f2 |-> FALSE, f3 |-> "a"]>>
+<<>>
+<<"The EXCEPT expression works for records similarly to how it works for">>
+<<"with only a slight difference in syntax:">>
+<<"  rec1 == [f1 |-> 7, f2 |-> FALSE, f3:\"a\"]">>
+<<"  [rec1 EXCEPT !.f2 = TRUE]  ", [f1 |-> 7, f2 |-> TRUE, f3 |-> "a"]>>
+<<"----------------------------------------------------------------------">>
+<<"Section 16.1.9 Tuples">>
+<<"----------------------------------------------------------------------">>
+<<"The set of all n-tuples where">>
+<<"  tuple element number 1 is in the set S1={0,1,2},">>
+<<"  tuple element number 2 is in the set S2=BOOLEAN,">>
+<<"  tuple element number 3 is in the set S3={\"a\", \"b\"},">>
+<<"is written:">>
+<<"  {4,7} \\X BOOLEAN \\X {\"a\", \"b\"}  ", {<<4, FALSE, "a">>, <<4, FALSE, "b">>, <<4, TRUE, "a">>, <<4, TRUE, "b">>, <<7, FALSE, "a">>, <<7, FALSE, "b">>, <<7, TRUE, "a">>, <<7, TRUE, "b">>}>>
+<<>>
+<<"One tuple in that set can be written this way:">>
+<<"  <<7, FALSE, \"a\">>  ", <<7, FALSE, "a">>>>
+<<>>
+<<"An N-tuple in TLA+ is equivalent to a function with domain 1..N">>
+<<"  tup1 == <<7, FALSE, \"a\">>">>
+<<"  fnt1 == [i \\in 1..3 |-> IF i=1 THEN 7 ELSE IF i=2 THEN FALSE ELSE \"a\"]">>
+<<"  tup1 = fnt1  ", TRUE>>
+<<>>
+<<"The 0-tuple is written << >>">>
+<<>>
+<<"The standard Sequences module uses n-tuples to represent">>
+<<"sequences of length n">>
+<<"----------------------------------------------------------------------">>
+<<"Section 18.1 Module Sequences">>
+<<"----------------------------------------------------------------------">>
+<<"The set of all finite sequences with elements in S:">>
+<<"  Seq(S)">>
+<<"The length of sequence s:">>
+<<"  Len(s)">>
+<<"  seq1 == <<10, 20, 30>>">>
+<<"  seq2 == <<\"a\", \"b\">>">>
+<<"  Len(seq1)  ", 3>>
+<<"The concatenation of sequences s1 followed by s2:">>
+<<"  s1 \\o s2      alternately: s1 \\circ s2">>
+<<"  seq1 \\o seq2  ", <<10, 20, 30, "a", "b">>>>
+<<"The sequence obtained by appending element e after the end of sequence s:">>
+<<"  Append(s, e)">>
+<<"  Append(seq1, 42)  ", <<10, 20, 30, 42>>>>
+<<"The first element of sequence s:">>
+<<"  Head(s)">>
+<<"  Head(seq2)", "a">>
+<<"The sequence of all but the he first element of sequence s:">>
+<<"  Tail(s)">>
+<<"  Tail(seq2)", <<"b">>>>
+<<"  Tail(Tail(seq2))", <<>>>>
+<< "The sequence starting with element at index m, up to element at index n, inclusive:" >>
+<<"  SubSeq(s, m, n)">>
+<<"  SubSeq(seq1, 3, 3)", <<30>>>>
+<<"The subsequence of s containing all elements e such that Test(e) is TRUE:">>
+<<"  SelectSeq(s, Test(_))">>
+<<"  MultipleOf4(n) == (n % 4) = 0">>
+<<"  SelectSeq(seq1, MultipleOf4)", <<20>>>>
+<<"----------------------------------------------------------------------">>
+<<"Section 18.2 Module FiniteSets">>
+<<"----------------------------------------------------------------------">>
+<<"Determine whether a set S is finite:">>
+<<"  IsFiniteSet(S)">>
+<<"  IsFiniteSet({2,4,6})", TRUE>>
+<<"  IsFiniteSet(Nat)", FALSE>>
+<<"The cardinality of a set is defined only for finite sets:">>
+<<"  Cardinality(S)">>
+<<"  Cardinality({2,4,6})", 3>>
+<< "  Cardinality(Nat)",
+   "tlc gives error 'Attempted to compute cardinality of the value Nat' if i attempts to evaluate this." >>
+<<"----------------------------------------------------------------------">>
+<<"Section 18.3 Module Bags">>
+<<"----------------------------------------------------------------------">>
+<<"The bag that contains one copy of every element of the set S">>
+<<"  SetToBag(S)">>
+<<"  SetToBag({1,2,4})", (1 :> 1 @@ 2 :> 1 @@ 4 :> 1)>>
+<<"  SetToBag({\"a\",\"c\",\"c\"})", [a |-> 1, b |-> 1, c |-> 1]>>
+<<"True iff B is a bag:">>
+<<"  IsABag(B)">>
+<<"  IsABag(SetToBag({1,2,3}))", TRUE>>
+<<"  IsABag({1,2,3})", FALSE>>
+<<"The union of bags B1 and B2">>
+<<"  B1 (+) B2     alternately:   B1 \\oplus B2">>
+<<"  bag1 == SetToBag({1,2,4})">>
+<<"  bag1", (1 :> 1 @@ 2 :> 1 @@ 4 :> 1)>>
+<<"  bag2 == SetToBag({  2,4,5})">>
+<<"  bag2", (2 :> 1 @@ 4 :> 1 @@ 5 :> 1)>>
+<<"  bag3 == bag1 \\oplus bag2">>
+<<"  bag3", (1 :> 1 @@ 2 :> 2 @@ 4 :> 2 @@ 5 :> 1)>>
+<<"  bag4 == bag3 \\oplus bag3">>
+<<"  bag4", (1 :> 2 @@ 2 :> 4 @@ 4 :> 4 @@ 5 :> 2)>>
+<<"  bag5 == SetToBag({      5,6,7})">>
+<<"  bag5", (5 :> 1 @@ 6 :> 1 @@ 7 :> 1)>>
+<<"The set of elements that have at least one copy in bag B">>
+<<"  BagToSet(B)">>
+<<"  BagToSet(bag4)", {1, 2, 4, 5}>>
+<<"The \\in operator for bags">>
+<<"  BagIn(e, B)">>
+<<"  BagIn(1, bag4)", TRUE>>
+<<"  BagIn(8, bag4)", FALSE>>
+<<"The empty bag">>
+<<"  EmptyBag">>
+<<"The number of copies of e in bag B">>
+<<"  CopiesIn(e, B)">>
+<<"  CopiesIn(1, bag4)", 2>>
+<<"  CopiesIn(8, bag4)", 0>>
+<<"The bag B1 with the elements of B2 removed">>
+<<"  B1 (-) B2     alternately:   B1 \\ominus B2">>
+<<"  bag4 \\ominus bag5", (1 :> 2 @@ 2 :> 4 @@ 4 :> 4 @@ 5 :> 1)>>
+<<"The bag union of all elements of the set S of bags">>
+<<"  BagUnion(S)">>
+<<"  BagUnion({bag1,bag2,bag3,bag4})", (1 :> 4 @@ 2 :> 8 @@ 4 :> 8 @@ 5 :> 4)>>
+<<"The subset operator for bags">>
+<<"  B1 \\sqsubseteq B2">>
+<<"  bag1 \\sqsubseteq bag4", TRUE>>
+<<"  bag1 \\sqsubseteq bag5", FALSE>>
+<<"The set of all subbags of bag B">>
+<<"  SubBag(B)">>
+<<"  bag6 == SetToBag({10,20}) (+) SetToBag({10})">>
+<<"  bag6", (10 :> 2 @@ 20 :> 1)>>
+<< "  SubBag(bag6)",
+   { <<>>,
+     (10 :> 1),
+     (10 :> 2),
+     (20 :> 1),
+     (10 :> 1 @@ 20 :> 1),
+     (10 :> 2 @@ 20 :> 1) } >>
+<<"The bag analog of the set {F(x): x \\in B} for a set B">>
+<<"  BagOfAll(F(_), B)">>
+<<"  Triple(x) == 3*x">>
+<<"  BagOfAll(Triple, bag6)", (30 :> 2 @@ 60 :> 1)>>
+<<"  Constant5(x) == 5+x-x">>
+<<"  BagOfAll(Constant5, bag6)", (5 :> 3)>>
+<<"The total number of copies of elements in bag B">>
+<<"  BagCardinality(B)">>
+<<"  BagCardinality(bag1)", 3>>
+<<"  BagCardinality(bag4)", 12>>
+<<"----------------------------------------------------------------------">>
+<<"Section 18.4 The Numbers Modules -- Naturals">>
+<<"----------------------------------------------------------------------">>
+<<"Addition, subtraction, multiplication, exponentiation">>
+<<"  5+7", 12>>
+<<"  7-5", 2>>
+<<"  5-7", -2>>
+<<"  2^9", 512>>
+<<"Integer quotient and remainder">>
+<<"  Note: TLA+ defines \\div and % so that the following is true:">>
+<<"    a = b * (a \\div b) + (a % b)">>
+<<"  for all integers a and b with b > 0.">>
+<<"  5 \\div 3  and 5 % 3", 1, 2>>
+<<"  (-5) \\div 3  and (-5) % 3", -2, 1>>
+<<"Comparison of numbers">>
+<<"  <= can also be written =< or \\leq">>
+<<"  >= can also be written \\geq">>
+<<"  -5 <= 5", TRUE>>
+<<"  5 <= 5", TRUE>>
+<<"  5 < 5", FALSE>>
+<<"  -5 >= 5", FALSE>>
+<<"  5 > 5", FALSE>>
+<<"Sets of numbers in a range">>
+<<"  0..5", 0..5>>
+<<"  Cardinality(0..5)", 6>>
+<<"  5..5", 5..5>>
+<<"  Cardinality(5..5)", 1>>
+<<"  6..5", {}>>
+<<"  Cardinality(6..5)", 0>>
+<<"----------------------------------------------------------------------">>
+<<"Section 16.1.10 Strings">>
+<<"----------------------------------------------------------------------">>
+<<"TODO">>
+<<"----------------------------------------------------------------------">>
+<<"Section 16.1.11 Numbers">>
+<<"----------------------------------------------------------------------">>
+<<"TODO">>
+Computing initial states...
+Finished computing initial states: 0 distinct states generated at 2021-09-20 14:21:59.
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 0.0
+0 states generated, 0 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 1.
+Finished in 00s at (2021-09-20 14:21:59)
