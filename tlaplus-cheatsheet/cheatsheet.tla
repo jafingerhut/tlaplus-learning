@@ -95,7 +95,7 @@ ASSUME PrintT(<<"  {1,2,3} \\union {10,11,12}",
                    {1,2,3} \union {10,11,12}>>)
 ASSUME PrintT(<<"  {1,2,3} \\union {3,11,12}",
                    {1,2,3} \union {3,11,12}>>)
-ASSUME PrintT(<<"Set intersection uses binary operator \\intersection or \\cap">>)
+ASSUME PrintT(<<"Set intersection uses binary operator \\intersect or \\cap">>)
 ASSUME PrintT(<<"  {1,2,3} \\intersect {10,11,12}",
                    {1,2,3} \intersect {10,11,12}>>)
 ASSUME PrintT(<<"  {1,2,3} \\intersect {2,11,12}",

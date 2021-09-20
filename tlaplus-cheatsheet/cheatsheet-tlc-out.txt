@@ -1,5 +1,5 @@
 TLC2 Version 2.16 of 31 December 2020 (rev: cdddf55)
-Running breadth-first search Model-Checking with fp 109 and seed -8118089015340213936 with 1 worker on 8 cores with 3641MB heap and 64MB offheap memory [pid: 32045] (Mac OS X 10.14.6 x86_64, AdoptOpenJDK 15.0.1 x86_64, MSBDiskFPSet, DiskStateQueue).
+Running breadth-first search Model-Checking with fp 53 and seed 5001704545452436001 with 1 worker on 8 cores with 3641MB heap and 64MB offheap memory [pid: 32128] (Mac OS X 10.14.6 x86_64, AdoptOpenJDK 15.0.1 x86_64, MSBDiskFPSet, DiskStateQueue).
 Parsing file /Users/andy/Documents/p4-docs/tlaplus/tlaplus-learning/tlaplus-cheatsheet/cheatsheet.tla
 Parsing file /private/var/folders/rv/2vbzx7zj64x4hss7rdl1xywc0000gn/T/TLC.tla
 Parsing file /private/var/folders/rv/2vbzx7zj64x4hss7rdl1xywc0000gn/T/Integers.tla
@@ -14,7 +14,7 @@ Semantic processing of module TLC
 Semantic processing of module Integers
 Semantic processing of module Bags
 Semantic processing of module cheatsheet
-Starting... (2021-09-20 14:39:43)
+Starting... (2021-09-20 14:42:22)
 <<"----------------------------------------------------------------------">>
 <<"Selected syntax and operators">>
 <<"(introduced 'out of order' here because they are so useful in">>
@@ -124,7 +124,7 @@ Starting... (2021-09-20 14:39:43)
 <<"Set union uses binary operator \\union or \\cup">>
 <<"  {1,2,3} \\union {10,11,12}", {1, 2, 3, 10, 11, 12}>>
 <<"  {1,2,3} \\union {3,11,12}", {1, 2, 3, 11, 12}>>
-<<"Set intersection uses binary operator \\intersection or \\cap">>
+<<"Set intersection uses binary operator \\intersect or \\cap">>
 <<"  {1,2,3} \\intersect {10,11,12}", {}>>
 <<"  {1,2,3} \\intersect {2,11,12}", {2}>>
 <<"Set difference uses binary operator \\">>
@@ -390,11 +390,11 @@ Starting... (2021-09-20 14:39:43)
 <<"----------------------------------------------------------------------">>
 <<"TODO">>
 Computing initial states...
-Finished computing initial states: 0 distinct states generated at 2021-09-20 14:39:43.
+Finished computing initial states: 0 distinct states generated at 2021-09-20 14:42:22.
 Model checking completed. No error has been found.
   Estimates of the probability that TLC did not check all reachable states
   because two distinct states had the same fingerprint:
   calculated (optimistic):  val = 0.0
 0 states generated, 0 distinct states found, 0 states left on queue.
 The depth of the complete state graph search is 1.
-Finished in 00s at (2021-09-20 14:39:43)
+Finished in 00s at (2021-09-20 14:42:22)
