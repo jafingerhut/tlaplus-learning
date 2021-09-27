@@ -1,7 +1,7 @@
 # This is a script I have on my system to set the JAVA_HOME
 # environment variable, and to add to the PATH variable the directory
 # ${JAVA_HOME}/bin
-source $HOME/jdks/setup-adoptopenjdk-hotspot-11-64bit.sh
+source $HOME/p4-docs/jdks/setup-adoptopenjdk-11-linux-x64-hotspot.sh
 
 # This directory on my Ubuntu 20.04 system contains both the toolbox
 # executable, to start the TLA+ Toolbox, and also a copy of the file
